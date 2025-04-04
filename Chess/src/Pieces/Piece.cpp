@@ -1,19 +1,19 @@
 #include "Pieces/Piece.h"
 
 
-Piece::Piece(const string& position, bool isBlack, const string& name)
+Piece::Piece(const std::string& position, bool isBlack, const std::string& name)
 	:m_position(position), m_isBlack(isBlack), m_name(name){}
 
 // sets the position once the movement had been checked and found valid
-void Piece::move(const string& targetPosition) {
+void Piece::move(const std::string& targetPosition) {
 	m_position = targetPosition;
 }
 
-string Piece::getName() const {
+std::string Piece::getName() const {
 	return m_name;
 }
 
-string Piece::getPosition() const {
+std::string Piece::getPosition() const {
 	return m_position;
 }
 

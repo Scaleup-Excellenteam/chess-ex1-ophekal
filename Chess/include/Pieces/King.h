@@ -1,0 +1,12 @@
+#pragma once
+#include "Pieces/Piece.h"
+
+class King : public Piece
+{
+public:
+	King(const std::string& position, bool isBlack);
+	bool isMoveValid(const std::string& targetPosition) const override;
+
+private:
+	static bool m_register; // For registering the Bishop piece in the factory
+};

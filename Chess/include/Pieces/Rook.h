@@ -4,7 +4,9 @@
 class Rook: public Piece
 {
 public:
-	Rook(const string& position, bool isBlack);
-	bool isMoveValid(string targetPosition) const override;
+	Rook(const std::string& position, bool isBlack);
+	bool isMoveValid(const std::string& targetPosition) const override;
 
+private:
+	static bool m_register; // For registering the Rook piece in the factory
 };

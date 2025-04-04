@@ -4,16 +4,16 @@
 class Piece
 {
 public:
-	Piece(const string& position, bool isBlack, const string& name);
+	Piece(const std::string& position, bool isBlack, const std::string& name);
 	virtual ~Piece() = default;
-	virtual bool isMoveValid(const string& targetPosition) const =0;
-	virtual void move(const string& targetPosition);
-	string getName() const;
-	string getPosition() const;
+	virtual bool isMoveValid(const std::string& targetPosition) const =0;
+	virtual void move(const std::string& targetPosition);
+	std::string getName() const;
+	std::string getPosition() const;
 	bool isBlack() const;
 
 protected:
-	string m_name;       // The type of the piece
-	string m_position;   // Current position on the board (e.g., "e4")
+	std::string m_name;       // The type of the piece
+	std::string m_position;   // Current position on the board (e.g., "e4")
 	bool m_isBlack;      // True if black, false if white
 };
