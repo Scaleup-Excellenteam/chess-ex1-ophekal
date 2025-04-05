@@ -8,5 +8,5 @@ public:
 	bool isMoveValid(const std::string& targetPosition) const override;
 
 private:
-	static bool m_register; // For registering the Bishop piece in the factory
+	static bool m_register; // For registering the King piece in the factory
 };

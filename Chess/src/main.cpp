@@ -28,6 +28,8 @@ int main()
 		{ // put your code here instead that code
 			cout << "code response >> ";
 			cin >> codeResponse;
+
+			//codeResponse = manager.check(res);
 		}
 		/**/
 
