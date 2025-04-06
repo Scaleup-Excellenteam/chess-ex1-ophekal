@@ -3,8 +3,8 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
-#include "Piece.h"
 #include "Factory/PieceFactory.h"
+//#include <Pieces/Piece.h>
 
 class BoardManager
 {

@@ -16,4 +16,4 @@ std::unique_ptr<Piece> PieceFactory::createPiece(const std::string& name, const 
         return nullptr;
     }
     return it->second(position, isBlack);
-
+}

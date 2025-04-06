@@ -1,5 +1,6 @@
 #include "Pieces/Pawn.h"
 #include "Factory/PieceFactory.h"
+#include <iostream>
 
 
 // Register the Pawn into the factory

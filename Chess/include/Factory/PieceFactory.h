@@ -3,7 +3,7 @@
 #include <memory>
 #include <unordered_map>
 #include <functional>
-#include "Piece.h"
+#include "Pieces/Piece.h"
 
 
 class PieceFactory
@@ -11,7 +11,7 @@ class PieceFactory
 public:
 	using PieceCreator = std::function<std::unique_ptr<Piece>(const std::string&, bool)>;
 
-	static void registerPiece(const std::string& name, PieceCreator creator);
+	static bool registerPiece(const std::string& name, PieceCreator creator);
 	static std::unique_ptr<Piece> createPiece(const std::string& name, const std::string& position, bool isBlack);
 
 private:

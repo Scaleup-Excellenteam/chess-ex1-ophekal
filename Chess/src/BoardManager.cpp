@@ -1,5 +1,7 @@
 #include "BoardManager.h"
 #include <cctype>
+#include <iostream>
+#include <memory>
 
 // BoardManager Constructor
 BoardManager::BoardManager(const std::string& boardString){
@@ -17,6 +19,8 @@ BoardManager::BoardManager(const std::string& boardString){
 
 		m_board[position] = PieceFactory::createPiece(pieceName, position, isBlack);
 	}
+
+	std::cout<<"BoardManager: polymorphic board created"<<std::endl;
 }
 
 // Converts a character symbol to the corresponding piece name for the factory
@@ -57,7 +61,6 @@ void BoardManager::movePiece(const std::string& from, const std::string& target)
 
 	Piece* piece = getPieceAt(from);
 	if (piece) {
-		piece->move(target);
 		m_board[target] = std::move(m_board[from]);
 		m_board.erase(from);
 	}

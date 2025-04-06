@@ -1,11 +1,15 @@
 // Chess 
 #include "Chess.h"
+#include "GameController.h"
 
 int main()
 {
 	string board = "RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr"; 
 //	string board = "##########K###############################R#############r#r#####";
 	Chess a(board);
+
+	GameController controller(board);
+
 	int codeResponse = 0;
 	string res = a.getInput();
 	while (res != "exit")
@@ -26,9 +30,12 @@ int main()
 
 		/**/ 
 		{ // put your code here instead that code
+			
+			//if (controller.isMovemenetValid(res)) {
+			//
+			//}
 			cout << "code response >> ";
 			cin >> codeResponse;
-
 			//codeResponse = manager.check(res);
 		}
 		/**/
