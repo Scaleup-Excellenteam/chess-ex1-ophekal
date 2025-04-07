@@ -60,6 +60,38 @@ Piece* BoardManager::getPieceAt(const std::string& position) const {
 	return it->second.get();	// Returning the raw pointer to the piece in order to update it if needed
 }
 
+std::string BoardManager::findKingPosition(bool isBlack) const
+{
+	for (const auto& [position, piece] : m_board)
+	{
+		if (piece && piece->getName() == "King" && piece->isBlack() == isBlack)
+		{
+			return position;
+		}
+	}
+	return "";
+}
+
+
+// Iterate over the board and check for opponent's pieces
+bool BoardManager::IsIfOpponentPiecesThreatning(bool isBlack, std::string targetPosition) {
+
+	for (const auto& [position, piece] : m_board) {
+
+		if (piece && piece->isBlack() != isBlack) {
+
+			if (piece->isMoveValid(targetPosition)) {
+				
+				std::cout << "Opponent's piece can move to the target position!" << std::endl;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+
+
 // Updates the piece location on the board
 void BoardManager::movePiece(const std::string& from, const std::string& target) {
 
