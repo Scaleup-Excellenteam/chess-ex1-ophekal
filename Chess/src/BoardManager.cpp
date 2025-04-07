@@ -21,6 +21,10 @@ BoardManager::BoardManager(const std::string& boardString){
 	}
 
 	std::cout<<"BoardManager: polymorphic board created"<<std::endl;
+	for (const auto& pair : m_board) {
+		std::cout << pair.first << ": " << pair.second->getName() << (pair.second->isBlack() ? " (Black)" : " (White)") << std::endl;
+	}
+
 }
 
 // Converts a character symbol to the corresponding piece name for the factory
