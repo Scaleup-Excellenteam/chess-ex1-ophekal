@@ -19,7 +19,7 @@ Bishop::Bishop(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Bishop") {}
 
 
-bool Bishop::isMoveValid(const std::string& targetPosition) const {
+bool Bishop::isMoveValid(const std::string& targetPosition, const BoardMap& board) const {
 	std::cout << "check here if Bishops's movement is valid\n";
 
 	// Placeholder for the logic 

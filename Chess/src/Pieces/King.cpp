@@ -19,7 +19,7 @@ King::King(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "King") {}
 
 
-bool King::isMoveValid(const std::string& targetPosition) const {
+bool King::isMoveValid(const std::string& targetPosition, const BoardMap& board) const {
 	std::cout << "check here if King's movement is valid\n";
 
 	// Placeholder for the logic 

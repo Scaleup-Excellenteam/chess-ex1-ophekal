@@ -15,10 +15,10 @@ public:
 	std::string indexToPosition(int index) const;
 	Piece* getPieceAt(const std::string& position) const;
 	std::string findKingPosition(bool isBlack) const;
-	void movePiece(const std::string& from, const std::string& to);
-	bool IsIfOpponentPiecesThreatning(bool isBlack, std::string targetPosition);
-
-	//void setPieceAt(const std::string& pos, Piece* piece);
+	//void movePiece(const std::string& from, const std::string& to);
+	void movePiece(Piece* from, const std::string& to);
+	bool IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition);
+	const std::unordered_map<std::string, std::unique_ptr<Piece>>& getBoard() const;
 
 
 protected:

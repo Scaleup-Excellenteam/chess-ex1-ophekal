@@ -19,7 +19,7 @@ Queen::Queen(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Queen") {}
 
 
-bool Queen::isMoveValid(const std::string& targetPosition) const {
+bool Queen::isMoveValid(const std::string& targetPosition, const BoardMap& board) const {
 	std::cout << "check here if Queen's movement is valid\n";
 
 	// Placeholder for the logic 

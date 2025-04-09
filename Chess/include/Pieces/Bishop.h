@@ -5,7 +5,7 @@ class Bishop : public Piece
 {
 public:
 	Bishop(const std::string& position, bool isBlack);
-	bool isMoveValid(const std::string& targetPosition) const override;
+	bool isMoveValid(const std::string& targetPosition, const BoardMap& board) const override;
 
 private:
 	static bool m_register; // For registering the Bishop piece in the factory

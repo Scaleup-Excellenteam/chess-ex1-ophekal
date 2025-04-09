@@ -42,13 +42,14 @@ std::string BoardManager::charToPieceName(char symbol) const {
 	}
 }
 
-// Converts board string index to chess position
+// Converts string board index to chess position
 std::string BoardManager::indexToPosition(int index) const {
 
 	char row = 'a' + index / 8;
 	char col = '1' + index % 8;
 	return { row, col };
 }
+
 
 // Retrieves the piece at the given position on the board
 Piece* BoardManager::getPieceAt(const std::string& position) const {
@@ -74,13 +75,13 @@ std::string BoardManager::findKingPosition(bool isBlack) const
 
 
 // Iterate over the board and check for opponent's pieces
-bool BoardManager::IsIfOpponentPiecesThreatning(bool isBlack, std::string targetPosition) {
+bool BoardManager::IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) {
 
 	for (const auto& [position, piece] : m_board) {
 
-		if (piece && piece->isBlack() != isBlack) {
+		if (piece && piece->isBlack() != kingColor) {
 
-			if (piece->isMoveValid(targetPosition)) {
+			if (piece->isMoveValid(targetPosition, m_board)) {
 				
 				std::cout << "Opponent's piece can move to the target position!" << std::endl;
 				return true;
@@ -91,7 +92,7 @@ bool BoardManager::IsIfOpponentPiecesThreatning(bool isBlack, std::string target
 }
 
 
-
+/*
 // Updates the piece location on the board
 void BoardManager::movePiece(const std::string& from, const std::string& target) {
 
@@ -100,4 +101,21 @@ void BoardManager::movePiece(const std::string& from, const std::string& target)
 		m_board[target] = std::move(m_board[from]);
 		m_board.erase(from);
 	}
+}
+*/
+
+
+// Updates the piece location on the board
+void BoardManager::movePiece(Piece* from, const std::string& to) {
+
+	Piece* piece = getPieceAt(from->getPosition());
+	if (piece) {
+		m_board[to] = std::move(m_board[from->getPosition()]);
+		m_board.erase(from->getPosition());
+	}
+}
+
+// getter for board
+const std::unordered_map<std::string, std::unique_ptr<Piece>>& BoardManager::getBoard() const {
+	return m_board;
 }

@@ -21,3 +21,11 @@ std::string Piece::getPosition() const {
 bool Piece::isBlack() const {
 	return m_isBlack;
 }
+
+// Converts board stringposition to index
+std::pair<int, int> Piece::positionToCoords(const std::string& position) const {
+
+	int row = position[0] - 'a';
+	int col = position[1] - '1';
+	return { row,col };
+}

@@ -1,11 +1,12 @@
 // Chess 
 #include "Chess.h"
 #include "GameController.h"
+#include <iostream>
 
 int main()
 {
-	string board = "RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr"; 
-//	string board = "##########K###############################R#############r#r#####";
+	//string board = "RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr"; 
+	string board = "##########K###############################R#############r#r#####";
 	Chess a(board);
 
 	GameController controller(board);
@@ -31,12 +32,12 @@ int main()
 		/**/ 
 		{ // put your code here instead that code
 			
-			//if (controller.isMovemenetValid(res)) {
-			//
-			//}
-			cout << "code response >> ";
-			cin >> codeResponse;
-			//codeResponse = manager.check(res);
+			//cout << "code response >> ";
+			//cin >> codeResponse;
+
+			MoveResult result = controller.validateMovement(res);
+			std::cout << int(result) << std::endl;
+			codeResponse = int(result);
 		}
 		/**/
 
