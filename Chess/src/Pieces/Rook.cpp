@@ -19,10 +19,9 @@ Rook::Rook(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Rook") {}
 
 
-bool Rook::isMoveValid(const std::string& targetPosition, const BoardMap& board) const {
-	
-	std::cout << "check here if Rook's movement is valid\n";
-	
+// Only checks if direction is valid (horizontal or vertical)
+bool Rook::isDirectionValid(const std::string& targetPosition) const
+{
 	auto [currentRow, currentCol] = positionToCoords(m_position);
 	auto [targetRow, targetCol] = positionToCoords(targetPosition);
 
@@ -31,6 +30,16 @@ bool Rook::isMoveValid(const std::string& targetPosition, const BoardMap& board)
 		return false;
 	}
 
+	return true;
+}
+
+
+/*
+
+bool Rook::isMoveValid(const std::string& targetPosition, const BoardMap& board) const {
+	
+	std::cout << "check here if Rook's movement is valid\n";
+	
 	// checking if there are any pieces in the way
 	if (currentRow == targetRow) {
 		// since the move is horizontal only the col changes, therefore set the start and end col the piece moved through
@@ -63,3 +72,6 @@ bool Rook::isMoveValid(const std::string& targetPosition, const BoardMap& board)
 
 	return true;
 }
+
+
+*/

@@ -5,7 +5,7 @@ class Queen : public Piece
 {
 public:
 	Queen(const std::string& position, bool isBlack);
-	bool isMoveValid(const std::string& targetPosition, const BoardMap& board) const override;
+	bool isDirectionValid (const std::string& targetPosition) const override;
 
 private:
 	static bool m_register; // For registering the Queen piece in the factory

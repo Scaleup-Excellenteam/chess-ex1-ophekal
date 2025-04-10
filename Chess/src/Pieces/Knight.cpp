@@ -18,6 +18,17 @@ Knight::Knight(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Knight") {}
 
 
+
+bool Knight::isDirectionValid(const std::string& targetPosition) const
+{
+	return false;
+}
+
+
+/*
+
 bool Knight::isMoveValid(const std::string& targetPosition, const BoardMap& board) const {
 	return false; // no actual move logic
 }
+
+*/

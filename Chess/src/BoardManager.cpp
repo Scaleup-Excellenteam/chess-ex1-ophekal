@@ -1,4 +1,5 @@
 #include "BoardManager.h"
+#include "MovementValidator.h"
 #include <cctype>
 #include <iostream>
 #include <memory>
@@ -77,14 +78,15 @@ std::string BoardManager::findKingPosition(bool isBlack) const
 // Iterate over the board and check for opponent's pieces
 bool BoardManager::IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) {
 
+	MovementValidator validator;
+
 	for (const auto& [position, piece] : m_board) {
 
 		if (piece && piece->isBlack() != kingColor) {
-
-			if (piece->isMoveValid(targetPosition, m_board)) {
-				
-				std::cout << "Opponent's piece can move to the target position!" << std::endl;
-				return true;
+			if (piece->isDirectionValid(targetPosition)) {
+				if (validator.isMoveLegal(piece.get(), targetPosition, m_board)) {
+					return true;
+				}
 			}
 		}
 	}

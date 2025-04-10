@@ -71,10 +71,15 @@ bool GameController::isMyPiece(Piece* piece) {
 // Check if the piece can move to the target position
 bool GameController::canLegallyMove(Piece* piece, const std::string& target) {
 
-	if (!piece->isMoveValid(target, m_boardManager.getBoard())) {
+	return m_movementValidator.isMoveLegal(piece, target, m_boardManager.getBoard());
+	
+	/*
+	* 	if (!piece->isMoveValid(target, m_boardManager.getBoard())) {
 		return false;
 	}
 	return true;
+	*/
+
 }
 
 

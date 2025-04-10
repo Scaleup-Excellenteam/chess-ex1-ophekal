@@ -19,6 +19,13 @@ Bishop::Bishop(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Bishop") {}
 
 
+// Only checks if direction is valid (diagonal)
+bool Bishop::isDirectionValid(const std::string& targetPosition) const
+{
+	return false;
+}
+
+/*
 bool Bishop::isMoveValid(const std::string& targetPosition, const BoardMap& board) const {
 	std::cout << "check here if Bishops's movement is valid\n";
 
@@ -26,3 +33,5 @@ bool Bishop::isMoveValid(const std::string& targetPosition, const BoardMap& boar
 
 	return true;
 }
+
+*/

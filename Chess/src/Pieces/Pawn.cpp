@@ -18,6 +18,16 @@ Pawn::Pawn(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Pawn") {}
 
 
+
+bool Pawn::isDirectionValid(const std::string& targetPosition) const
+{
+	return false;
+}
+
+
+/*
 bool Pawn::isMoveValid(const std::string& targetPosition, const std::unordered_map<std::string, std::unique_ptr<Piece>>& board) const {
 	return false; // no actual move logic
 }
+
+*/

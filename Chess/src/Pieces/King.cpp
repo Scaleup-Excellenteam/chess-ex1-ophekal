@@ -19,10 +19,18 @@ King::King(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "King") {}
 
 
-bool King::isMoveValid(const std::string& targetPosition, const BoardMap& board) const {
+
+// Only checks if direction is valid (one square in any direction)
+bool King::isDirectionValid(const std::string& targetPosition) const
+{	
 	std::cout << "check here if King's movement is valid\n";
+	return true;
+}
+
+/*bool King::isMoveValid(const std::string& targetPosition, const BoardMap& board) const {
 
 	// Placeholder for the logic 
 
 	return true;
 }
+*/

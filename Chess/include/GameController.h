@@ -3,6 +3,7 @@
 #include <string>
 #include "BoardManager.h"
 #include "MoveResult.h"
+#include "MovementValidator.h"
 
 class GameController
 {
@@ -13,6 +14,8 @@ public:
 private:
 	BoardManager m_boardManager;
 	bool m_isBlackTurn;
+	MovementValidator m_movementValidator;
+
 	void updateIsBlackTurn(bool isBlackTurn);
 	bool isCurrentPlayerBlack () const;
 	bool isKingInCheck(bool isBlack);
