@@ -107,7 +107,7 @@ void BoardManager::movePiece(const std::string& from, const std::string& target)
 */
 
 
-// Updates the piece location on the board
+/*// Updates the piece location on the board
 void BoardManager::movePiece(Piece* from, const std::string& to) {
 
 	Piece* piece = getPieceAt(from->getPosition());
@@ -115,6 +115,19 @@ void BoardManager::movePiece(Piece* from, const std::string& to) {
 		m_board[to] = std::move(m_board[from->getPosition()]);
 		m_board.erase(from->getPosition());
 	}
+}
+
+*/
+
+
+// Updates the piece location on the board
+void BoardManager::movePiece(Piece* piece, const std::string& to) {
+
+	std::string from = piece->getPosition();
+	m_board[to] = std::move(m_board[from]);
+	m_board.erase(from);
+	piece->move(to);
+
 }
 
 // getter for board

@@ -40,7 +40,7 @@ MoveResult GameController::validateMovement(const std::string& response)
 	if (!canLegallyMove(piece, target)) return  MoveResult::InvalidMoveOrBlocked;
 	if (doesMoveCauseSelfCheck(piece, from, target)) return MoveResult::MoveCausesCheck;
 
-	piece->move(target);
+	//piece->move(target);
 	//m_boardManager.movePiece(from, target);
 	m_boardManager.movePiece(piece, target);
 	updateIsBlackTurn(!piece->isBlack());
