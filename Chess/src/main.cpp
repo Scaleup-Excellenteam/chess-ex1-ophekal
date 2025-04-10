@@ -6,7 +6,8 @@
 int main()
 {
 	//string board = "RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr"; 
-	string board = "##########K###############################R#############r#r#####";
+	//string board = "##########K###############################R#############r#r#####";
+	string board = "##########K#############################################r#r#####";
 	Chess a(board);
 
 	GameController controller(board);

@@ -9,7 +9,6 @@ bool MovementValidator::isMoveLegal(const Piece* piece, const std::string& targe
         return false;
     }
 
-    // check if the path is clear
     return isPathClear(piece, targetPosition, board);
 };
 
@@ -26,7 +25,7 @@ bool MovementValidator::isPathClear(const Piece* piece, const std::string& targe
     auto [startRow, startCol] = piece->positionToCoords(piece->getPosition());
     auto [endRow, endCol] = piece->positionToCoords(targetPosition);
 
-    // virtcal or horizontal path
+    // virtical or horizontal path
     if (startRow == endRow || startCol == endCol) {
         return isStraightPathClear(startRow, startCol, endRow, endCol, board);
     }
@@ -36,7 +35,7 @@ bool MovementValidator::isPathClear(const Piece* piece, const std::string& targe
         return isDiagonalPathClear(startRow, startCol, endRow, endCol, board);
     }
 
-    // will not reach here
+    // will never reach here
     return false;
 }
 
@@ -52,7 +51,6 @@ bool MovementValidator::isStraightPathClear(int startRow, int startCol, int endR
             std::string positionToCheck = coordsToPosition(startRow, col);
 
             if (board.find(positionToCheck) != board.end()) {
-                // means there's a piece in the way
                 return false;
             }
         }
@@ -66,19 +64,32 @@ bool MovementValidator::isStraightPathClear(int startRow, int startCol, int endR
             std::string positionToCheck = coordsToPosition(row, startCol);
 
             if (board.find(positionToCheck) != board.end()) {
-                // means there's a piece in the way
                 return false;
             }
         }
     }
 
-    return true; // path is clear
+    return true;
 }
 
 
 bool MovementValidator::isDiagonalPathClear(int startRow, int startCol, int endRow, int endCol, const BoardMap& board) {
-    return false;
+    
+    int rowDirection = (endRow > startRow) ? 1 : -1;
+    int colDirection = (endCol > startCol) ? 1 : -1;
 
+    int row = startRow + rowDirection;
+    int col = startCol + colDirection;
+
+    while (row != endRow && col != endCol) {
+        std::string positionToCheck = coordsToPosition(row, col);
+        if (board.find(positionToCheck) != board.end()) {
+            return false;
+        }
+        row += rowDirection;
+        col += colDirection;
+    }
+    return true;
 }
 
 
