@@ -6,15 +6,11 @@
 // Register the King into the factory
 bool King::m_register = PieceFactory::registerPiece("King",
 	[](const std::string& pos, bool isBlack) {
-
-		std::cout << "King created\n";
-
 		return std::make_unique<King>(pos, isBlack);
 	});
 
 
 //----------------------------------------------------------
-
 King::King(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "King") {}
 
@@ -23,14 +19,10 @@ King::King(const std::string& position, bool isBlack)
 // Only checks if direction is valid (one square in any direction)
 bool King::isDirectionValid(const std::string& targetPosition) const
 {	
-	std::cout << "check here if King's movement is valid\n";
-	return true;
+	auto [currentRow, currentCol] = positionToCoords(m_position);
+	auto [targetRow, targetCol] = positionToCoords(targetPosition);
+
+	return (((std::abs(currentRow - targetRow) == 1) && (std::abs(currentCol - targetCol) == 1)) ||
+			((std::abs(currentRow - targetRow) == 1) && (currentCol == targetCol)) ||
+			((currentRow == targetRow) && (std::abs(currentCol - targetCol) == 1)));
 }
-
-/*bool King::isMoveValid(const std::string& targetPosition, const BoardMap& board) const {
-
-	// Placeholder for the logic 
-
-	return true;
-}
-*/

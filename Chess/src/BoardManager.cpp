@@ -94,32 +94,6 @@ bool BoardManager::IsIfOpponentPiecesThreatning(bool kingColor, std::string targ
 }
 
 
-/*
-// Updates the piece location on the board
-void BoardManager::movePiece(const std::string& from, const std::string& target) {
-
-	Piece* piece = getPieceAt(from);
-	if (piece) {
-		m_board[target] = std::move(m_board[from]);
-		m_board.erase(from);
-	}
-}
-*/
-
-
-/*// Updates the piece location on the board
-void BoardManager::movePiece(Piece* from, const std::string& to) {
-
-	Piece* piece = getPieceAt(from->getPosition());
-	if (piece) {
-		m_board[to] = std::move(m_board[from->getPosition()]);
-		m_board.erase(from->getPosition());
-	}
-}
-
-*/
-
-
 // Updates the piece location on the board
 void BoardManager::movePiece(Piece* piece, const std::string& to) {
 
@@ -128,6 +102,24 @@ void BoardManager::movePiece(Piece* piece, const std::string& to) {
 	m_board.erase(from);
 	piece->move(to);
 
+}
+
+Piece* BoardManager::removePieceAt(const std::string& position)
+{
+	auto it = m_board.find(position);
+	if (it != m_board.end()) {
+		Piece* rawPointer = it->second.release();
+		m_board.erase(it);
+		return rawPointer;
+	}
+	return nullptr;
+}
+
+void BoardManager::placePiece(Piece* piece, const std::string& position){
+	if (piece) {
+		piece->move(position);
+		m_board[position] = std::unique_ptr<Piece>(piece);
+	}
 }
 
 // getter for board

@@ -7,7 +7,7 @@ int main()
 {
 	//string board = "RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr"; 
 	//string board = "##########K###############################R#############r#r#####";
-	string board = "##########K#############################################r#r#####";
+	string board = "###B######K#############################################r#r#####";
 	Chess a(board);
 
 	GameController controller(board);
@@ -31,11 +31,7 @@ int main()
 		*/
 
 		/**/ 
-		{ // put your code here instead that code
-			
-			//cout << "code response >> ";
-			//cin >> codeResponse;
-
+		{ 
 			MoveResult result = controller.validateMovement(res);
 			std::cout << int(result) << std::endl;
 			codeResponse = int(result);

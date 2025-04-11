@@ -5,7 +5,6 @@ class Rook: public Piece
 {
 public:
 	Rook(const std::string& position, bool isBlack);
-	//bool isMoveValid(const std::string& targetPosition, const BoardMap& board) const override;
 	bool isDirectionValid(const std::string& targetPosition) const override;
 
 private:

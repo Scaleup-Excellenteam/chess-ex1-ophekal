@@ -6,9 +6,6 @@
 // Register the Pawn into the factory
 bool Pawn::m_register = PieceFactory::registerPiece("Pawn",
 	[](const std::string& pos, bool isBlack) {
-
-		std::cout << "Pawn created\n";
-
 		return std::make_unique<Pawn>(pos, isBlack);
 	});
 
@@ -24,10 +21,3 @@ bool Pawn::isDirectionValid(const std::string& targetPosition) const
 	return false;
 }
 
-
-/*
-bool Pawn::isMoveValid(const std::string& targetPosition, const std::unordered_map<std::string, std::unique_ptr<Piece>>& board) const {
-	return false; // no actual move logic
-}
-
-*/

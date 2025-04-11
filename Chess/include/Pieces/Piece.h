@@ -12,9 +12,7 @@ public:
 
 	Piece(const std::string& position, bool isBlack, const std::string& name);
 	virtual ~Piece() = default;
-	//virtual bool isMoveValid(const std::string& targetPosition, const BoardMap& board) const =0;
 	virtual bool isDirectionValid(const std::string& targetPosition) const = 0;
-	//virtual bool isMoveValid(const std::string& targetPosition, std::unordered_map<std::string, std::unique_ptr<Piece>>& board) const =0;
 	void move(const std::string& targetPosition);
 	std::string getName() const;
 	std::string getPosition() const;
