@@ -26,3 +26,6 @@
 # Ignore temporary image cache
 img/cache/
 
+# Ignore vs and out folders
+.vs/
+.out/
