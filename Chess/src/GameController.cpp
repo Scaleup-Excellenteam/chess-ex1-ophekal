@@ -4,26 +4,43 @@
 #include "MoveResult.h"
 
 
-// Initializes the game controller with a given board setup string.
-// White starts the game by default.
+/**
+ * Constructs a new GameController with the given board layout string.
+ * White starts the game by default (m_isBlackTurn = false).
+ *
+ * @param boardString A linear board representation used to initialize the game.
+ */
 GameController::GameController (const std::string& boardString)
 	: m_boardManager(boardString), m_isBlackTurn(false) {}
 
 
-// Returns true if it's currently black's turn
+/**
+ * Checks if it's currently black's turn.
+ *
+ * @return True if it's black's turn; otherwise, false.
+ */
 bool GameController::isCurrentPlayerBlack() const
 {
 	return m_isBlackTurn;
 }
 
 
-// Updates whose turn it is to play
+/**
+ * Sets the current turn to black or white.
+ *
+ * @param isBlackTurn True if it's black's turn, false for white.
+ */
 void GameController::updateIsBlackTurn(bool isBlackTurn) {
 	m_isBlackTurn = isBlackTurn;
 }
 
 
-// Validates and executes a move command from the user
+/**
+ * Validates and performs a move based on the user's input command.
+ *
+ * @param response A string containing a move (e.g., "e2e4").
+ * @return A MoveResult enum value indicating the outcome of the move.
+ */
 MoveResult GameController::validateMovement(const std::string& response)
 {
 	std::string from = response.substr(0, 2);
@@ -46,7 +63,12 @@ MoveResult GameController::validateMovement(const std::string& response)
 }
 
 
-// Checks if there's a piece in the specified position
+/**
+ * Determines if a source square has a piece.
+ *
+ * @param piece Pointer to the piece at the source position.
+ * @return True if a piece exists; otherwise, false.
+ */
 bool GameController::isValidSource(Piece* piece) {
 	if (!piece) {
 		return false;
@@ -55,7 +77,12 @@ bool GameController::isValidSource(Piece* piece) {
 }
 
 
-// Checks if the piece at the source belongs to the current player
+/**
+ * Checks whether the piece belongs to the current player.
+ *
+ * @param piece Pointer to the piece being moved.
+ * @return True if the piece belongs to the current player; otherwise, false.
+ */
 bool GameController::isMyPiece(Piece* piece) {
 	if (isCurrentPlayerBlack() != piece->isBlack()) {
 		return false;
@@ -64,24 +91,40 @@ bool GameController::isMyPiece(Piece* piece) {
 }
 
 
-// Determines if a move is legal for a piece based on its movement rules and path clearance
+/**
+ * Validates if the move is legal for the given piece type and path.
+ *
+ * @param piece Pointer to the piece being moved.
+ * @param target The destination square.
+ * @return True if the move is valid; otherwise, false.
+ */
 bool GameController::canLegallyMove(Piece* piece, const std::string& target) {
 
 	return m_movementValidator.isMoveLegal(piece, target, m_boardManager.getBoard());
 }
 
 
-// Checks if the destination position is occupied by a piece of the same color
+/**
+ * Determines if a piece at the destination square is the same color as the moving piece.
+ *
+ * @param piece Pointer to the piece being moved.
+ * @param targetPiece Pointer to the piece at the destination square.
+ * @return True if both pieces are of the same color; otherwise, false.
+ */
 bool GameController::isSameColorAtTarget(Piece* piece, const Piece* targetPiece) {
 	
-	if (targetPiece && targetPiece->isBlack() == piece->isBlack()) {
-		return true;	// same color therefore an illegal move
-	}
-	return false;
+	return (targetPiece && targetPiece->isBlack() == piece->isBlack());
 }
 
 
-// Simulates the move and checks if it would leave the player's king in check
+/**
+ * Simulates the move to check if it would leave the player's own king in check.
+ *
+ * @param piece Pointer to the piece to move.
+ * @param from Original position of the piece.
+ * @param to Target position of the piece.
+ * @return True if the move would result in a check against the player; otherwise, false.
+ */
 bool GameController::doesMoveCauseSelfCheck(Piece* piece, const std::string& from, const std::string& to) {
 
 	Piece* capturedPiece = m_boardManager.removePieceAt(to);
@@ -98,7 +141,12 @@ bool GameController::doesMoveCauseSelfCheck(Piece* piece, const std::string& fro
 }
 
 
-// Checks whether the specified player's king is under threat
+/**
+ * Determines whether the specified player's king is under threat.
+ *
+ * @param kingColor True for black king, false for white king.
+ * @return True if the king is in check; otherwise, false.
+ */
 bool GameController::isKingInCheck(bool kingColor) {
 	
 	std::string kingPosition = m_boardManager.findKingPosition(kingColor);
@@ -109,8 +157,5 @@ bool GameController::isKingInCheck(bool kingColor) {
 		return false;
 	}
 
-	if (m_boardManager.IsIfOpponentPiecesThreatning(kingColor, kingPosition)) {
-		return true;
-	}
-	return false;
+	return m_boardManager.IsIfOpponentPiecesThreatning(kingColor, kingPosition);
 }
