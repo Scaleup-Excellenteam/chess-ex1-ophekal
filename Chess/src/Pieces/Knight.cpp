@@ -11,6 +11,7 @@ bool Knight::m_register = PieceFactory::registerPiece("Knight",
 
 
 //----------------------------------------------------------
+// Knight Constructor
 Knight::Knight(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Knight") {}
 

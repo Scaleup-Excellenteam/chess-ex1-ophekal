@@ -24,10 +24,4 @@ private:
 	bool canLegallyMove(Piece* piece, const std::string& target);
 	bool isSameColorAtTarget(Piece* piece, const Piece* targetPiece);
 	bool doesMoveCauseSelfCheck(Piece* piece, const std::string& from, const std::string& to);
-
-
-
-
-
-
 };

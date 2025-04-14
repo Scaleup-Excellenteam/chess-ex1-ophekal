@@ -11,20 +11,16 @@ bool Rook::m_register = PieceFactory::registerPiece("Rook",
 
 
 //----------------------------------------------------------
+// Rook Constructor
 Rook::Rook(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Rook") {}
 
 
-// Only checks if direction is valid (horizontal or vertical)
+// Checks if direction is valid (horizontal or vertical)
 bool Rook::isDirectionValid(const std::string& targetPosition) const
 {
 	auto [currentRow, currentCol] = positionToCoords(m_position);
 	auto [targetRow, targetCol] = positionToCoords(targetPosition);
 
-	// checks if the move is neither horizontal nor vertical
-	if (currentRow != targetRow && currentCol != targetCol) {
-		return false;
-	}
-
-	return true;
+	return currentRow == targetRow || currentCol == targetCol;
 }

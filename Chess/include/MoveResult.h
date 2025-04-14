@@ -1,5 +1,7 @@
 #pragma once
 
+
+// Represents the possible outcomes when attempting to move a piece on the board
 enum class MoveResult {
     NoPieceAtSource = 11,
     OpponentPieceAtSource = 12,

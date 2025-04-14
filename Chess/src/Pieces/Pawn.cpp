@@ -11,6 +11,7 @@ bool Pawn::m_register = PieceFactory::registerPiece("Pawn",
 
 
 //----------------------------------------------------------
+// Pawn Constructor
 Pawn::Pawn(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Pawn") {}
 

@@ -2,7 +2,8 @@
 
 
 
-// The main validation method that combines direction validation and path checking
+// Validates whether a move for the given piece to the target position is legal,
+// by checking both direction validity and path clearance
 bool MovementValidator::isMoveLegal(const Piece* piece, const std::string& targetPosition, const BoardMap& board) {
     
     if (!piece->isDirectionValid(targetPosition)) {
@@ -13,6 +14,7 @@ bool MovementValidator::isMoveLegal(const Piece* piece, const std::string& targe
 };
 
 
+// Checks if the path between the piece's current position and the target position is clear
 bool MovementValidator::isPathClear(const Piece* piece, const std::string& targetPosition, const BoardMap& board) {
     
     std::string pieceName = piece->getName();
@@ -40,10 +42,11 @@ bool MovementValidator::isPathClear(const Piece* piece, const std::string& targe
 }
 
 
+// Checks if the straight (horizontal or vertical) path between two coordinates is clear
 bool MovementValidator::isStraightPathClear(int startRow, int startCol, int endRow, int endCol, const BoardMap& board) {
 
     if (startRow == endRow) {
-        // since the move is horizontal only the col changes
+        // the movement is horizontal
         int start = std::min(startCol, endCol) + 1;
         int end = std::max(startCol, endCol);
 
@@ -73,6 +76,7 @@ bool MovementValidator::isStraightPathClear(int startRow, int startCol, int endR
 }
 
 
+// Checks if the diagonal path between two coordinates is clear
 bool MovementValidator::isDiagonalPathClear(int startRow, int startCol, int endRow, int endCol, const BoardMap& board) {
     
     int rowDirection = (endRow > startRow) ? 1 : -1;
@@ -93,6 +97,7 @@ bool MovementValidator::isDiagonalPathClear(int startRow, int startCol, int endR
 }
 
 
+// Utility to convert coordinates back to a chess board position
 std::string MovementValidator::coordsToPosition(int row, int col) {
     char rowChar = 'a' + row;
     char colChar = '1' + col;

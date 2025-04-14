@@ -11,12 +11,13 @@ bool King::m_register = PieceFactory::registerPiece("King",
 
 
 //----------------------------------------------------------
+// King Constructor
 King::King(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "King") {}
 
 
 
-// Only checks if direction is valid (one square in any direction)
+// Checks if direction is valid (one square in any direction)
 bool King::isDirectionValid(const std::string& targetPosition) const
 {	
 	auto [currentRow, currentCol] = positionToCoords(m_position);

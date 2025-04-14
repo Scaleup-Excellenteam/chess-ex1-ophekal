@@ -21,6 +21,6 @@ public:
 
 protected:
 	std::string m_name;			// The type of the piece
-	std::string m_position;		// Current position on the board (e.g., "e4")
+	std::string m_position;		// Current position on the board
 	bool m_isBlack;				// True if black, false if white
 };

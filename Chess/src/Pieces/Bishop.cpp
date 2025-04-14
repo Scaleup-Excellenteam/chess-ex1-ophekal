@@ -11,11 +11,12 @@ bool Bishop::m_register = PieceFactory::registerPiece("Bishop",
 
 
 //----------------------------------------------------------
+// Bishop Constructor
 Bishop::Bishop(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Bishop") {}
 
 
-// Only checks if direction is valid (diagonal)
+// Checks if direction is valid (diagonal)
 bool Bishop::isDirectionValid(const std::string& targetPosition) const
 {
 	auto [currentRow, currentCol] = positionToCoords(m_position);

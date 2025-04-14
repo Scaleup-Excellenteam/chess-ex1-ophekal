@@ -20,12 +20,6 @@ BoardManager::BoardManager(const std::string& boardString){
 
 		m_board[position] = PieceFactory::createPiece(pieceName, position, isBlack);
 	}
-
-	std::cout<<"BoardManager: polymorphic board created"<<std::endl;
-	for (const auto& pair : m_board) {
-		std::cout << pair.first << ": " << pair.second->getName() << (pair.second->isBlack() ? " (Black)" : " (White)") << std::endl;
-	}
-
 }
 
 // Converts a character symbol to the corresponding piece name for the factory
@@ -62,6 +56,8 @@ Piece* BoardManager::getPieceAt(const std::string& position) const {
 	return it->second.get();	// Returning the raw pointer to the piece in order to update it if needed
 }
 
+
+// Finds the king of the specified team
 std::string BoardManager::findKingPosition(bool isBlack) const
 {
 	for (const auto& [position, piece] : m_board)
@@ -71,11 +67,13 @@ std::string BoardManager::findKingPosition(bool isBlack) const
 			return position;
 		}
 	}
+
+	// if the king isn't on the board
 	return "";
 }
 
 
-// Iterate over the board and check for opponent's pieces
+// Determines whether any opponent pieces are threatening the specified position
 bool BoardManager::IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) {
 
 	MovementValidator validator;
@@ -104,6 +102,8 @@ void BoardManager::movePiece(Piece* piece, const std::string& to) {
 
 }
 
+
+// Removes a poece from the board
 Piece* BoardManager::removePieceAt(const std::string& position)
 {
 	auto it = m_board.find(position);
@@ -115,6 +115,8 @@ Piece* BoardManager::removePieceAt(const std::string& position)
 	return nullptr;
 }
 
+
+// Places a given piece on the board at the specified position.
 void BoardManager::placePiece(Piece* piece, const std::string& position){
 	if (piece) {
 		piece->move(position);
@@ -122,7 +124,7 @@ void BoardManager::placePiece(Piece* piece, const std::string& position){
 	}
 }
 
-// getter for board
+// Getter for board
 const std::unordered_map<std::string, std::unique_ptr<Piece>>& BoardManager::getBoard() const {
 	return m_board;
 }
