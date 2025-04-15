@@ -108,7 +108,7 @@ BoardManager::BoardManager(const std::string& boardString){
   * @param targetPosition The position to check.
   * @return True if any opponent pieces threaten the king if piece is moved to targetPosition, false otherwise.
   */
- bool BoardManager::IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) {
+ bool BoardManager::IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) const {
 
 	MovementValidator validator;
 

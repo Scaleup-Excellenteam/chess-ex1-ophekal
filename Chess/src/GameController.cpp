@@ -69,7 +69,7 @@ MoveResult GameController::validateMovement(const std::string& response)
  * @param piece Pointer to the piece at the source position.
  * @return True if a piece exists; otherwise, false.
  */
-bool GameController::isValidSource(Piece* piece) {
+bool GameController::isValidSource(Piece* piece) const {
 	if (!piece) {
 		return false;
 	}
@@ -83,7 +83,7 @@ bool GameController::isValidSource(Piece* piece) {
  * @param piece Pointer to the piece being moved.
  * @return True if the piece belongs to the current player; otherwise, false.
  */
-bool GameController::isMyPiece(Piece* piece) {
+bool GameController::isMyPiece(Piece* piece) const {
 	if (isCurrentPlayerBlack() != piece->isBlack()) {
 		return false;
 	}
@@ -111,7 +111,7 @@ bool GameController::canLegallyMove(Piece* piece, const std::string& target) {
  * @param targetPiece Pointer to the piece at the destination square.
  * @return True if both pieces are of the same color; otherwise, false.
  */
-bool GameController::isSameColorAtTarget(Piece* piece, const Piece* targetPiece) {
+bool GameController::isSameColorAtTarget(Piece* piece, const Piece* targetPiece) const {
 	
 	return (targetPiece && targetPiece->isBlack() == piece->isBlack());
 }
@@ -147,7 +147,7 @@ bool GameController::doesMoveCauseSelfCheck(Piece* piece, const std::string& fro
  * @param kingColor True for black king, false for white king.
  * @return True if the king is in check; otherwise, false.
  */
-bool GameController::isKingInCheck(bool kingColor) {
+bool GameController::isKingInCheck(bool kingColor) const {
 	
 	std::string kingPosition = m_boardManager.findKingPosition(kingColor);
 	

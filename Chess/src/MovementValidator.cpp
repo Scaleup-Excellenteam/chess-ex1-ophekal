@@ -12,7 +12,7 @@
  * @param board Current state of the board with all active pieces.
  * @return True if the move is legal; otherwise, false.
  */
-bool MovementValidator::isMoveLegal(const Piece* piece, const std::string& targetPosition, const BoardMap& board) {
+bool MovementValidator::isMoveLegal(const Piece* piece, const std::string& targetPosition, const BoardMap& board) const {
     
     if (!piece->isDirectionValid(targetPosition)) {
         return false;
@@ -31,7 +31,7 @@ bool MovementValidator::isMoveLegal(const Piece* piece, const std::string& targe
  * @param board The board map with current pieces.
  * @return True if path is unobstructed; otherwise, false.
  */
-bool MovementValidator::isPathClear(const Piece* piece, const std::string& targetPosition, const BoardMap& board) {
+bool MovementValidator::isPathClear(const Piece* piece, const std::string& targetPosition, const BoardMap& board) const{
     
     std::string pieceName = piece->getName();
     
@@ -67,7 +67,7 @@ bool MovementValidator::isPathClear(const Piece* piece, const std::string& targe
  * @param board The current board state.
  * @return True if path is clear; otherwise, false.
  */
-bool MovementValidator::isStraightPathClear(int startRow, int startCol, int endRow, int endCol, const BoardMap& board) {
+bool MovementValidator::isStraightPathClear(int startRow, int startCol, int endRow, int endCol, const BoardMap& board) const {
 
     if (startRow == endRow) {
         // Horizontal movement
@@ -108,7 +108,7 @@ bool MovementValidator::isStraightPathClear(int startRow, int startCol, int endR
  * @param board The current board state.
  * @return True if path is clear; otherwise, false.
  */
-bool MovementValidator::isDiagonalPathClear(int startRow, int startCol, int endRow, int endCol, const BoardMap& board) {
+bool MovementValidator::isDiagonalPathClear(int startRow, int startCol, int endRow, int endCol, const BoardMap& board) const {
     
     int rowDirection = (endRow > startRow) ? 1 : -1;
     int colDirection = (endCol > startCol) ? 1 : -1;
@@ -135,7 +135,7 @@ bool MovementValidator::isDiagonalPathClear(int startRow, int startCol, int endR
  * @param col The column index (0 = '1', 7 = '8').
  * @return A string representing the position (e.g., "e4").
  */
-std::string MovementValidator::coordsToPosition(int row, int col) {
+std::string MovementValidator::coordsToPosition(int row, int col) const {
     char rowChar = 'a' + row;
     char colChar = '1' + col;
     return std::string(1, rowChar) + std::string(1, colChar);

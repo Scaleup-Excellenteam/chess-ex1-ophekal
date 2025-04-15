@@ -18,10 +18,10 @@ private:
 
 	void updateIsBlackTurn(bool isBlackTurn);
 	bool isCurrentPlayerBlack () const;
-	bool isKingInCheck(bool isBlack);
-	bool isValidSource(Piece* piece);
-	bool isMyPiece(Piece* piece);
+	bool isKingInCheck(bool isBlack) const;
+	bool isValidSource(Piece* piece) const;
+	bool isMyPiece(Piece* piece) const;
 	bool canLegallyMove(Piece* piece, const std::string& target);
-	bool isSameColorAtTarget(Piece* piece, const Piece* targetPiece);
+	bool isSameColorAtTarget(Piece* piece, const Piece* targetPiece) const;
 	bool doesMoveCauseSelfCheck(Piece* piece, const std::string& from, const std::string& to);
 };

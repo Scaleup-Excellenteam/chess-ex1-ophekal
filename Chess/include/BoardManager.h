@@ -15,7 +15,7 @@ public:
 	void movePiece(Piece* from, const std::string& to);
 	Piece* removePieceAt(const std::string& position);
 	void placePiece(Piece* piece, const std::string& position);
-	bool IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition);
+	bool IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) const;
 	const std::unordered_map<std::string, std::unique_ptr<Piece>>& getBoard() const;
 
 private:
