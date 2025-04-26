@@ -39,5 +39,10 @@ Knight::Knight(const std::string& position, bool isBlack)
  */
 bool Knight::isDirectionValid(const std::string& targetPosition) const
 {
-	return false;
+	auto [currentRow, currentCol] = positionToCoords(m_position);
+	auto [targetRow, targetCol] = positionToCoords(targetPosition);
+
+	return ((std::abs(currentRow - targetRow) == 2 && std::abs(currentCol - targetCol) == 1) ||
+		    (std::abs(currentRow - targetRow) == 1 && std::abs(currentCol - targetCol) == 2));
+
 }

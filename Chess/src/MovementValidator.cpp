@@ -18,13 +18,18 @@ bool MovementValidator::isMoveLegal(const Piece* piece, const std::string& targe
         return false;
     }
 
-    // Special handling for pawns
+    // special handeling for pawn
     if (piece->getName() == "Pawn") {
         return isPawnMoveLegal(piece, targetPosition, board);
     }
-
-    return isPathClear(piece, targetPosition, board);
-};
+    else if (piece->getName() == "Knight") {
+        // Knights can jump over pieces; only direction matters
+        return true;
+    }
+    else {
+        return isPathClear(piece, targetPosition, board);
+    }
+}
 
 
 /**
