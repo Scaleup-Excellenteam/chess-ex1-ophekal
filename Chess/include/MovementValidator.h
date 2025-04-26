@@ -15,5 +15,6 @@ private:
     bool isPathClear(const Piece* piece, const std::string& targetPosition, const BoardMap& board) const;
     bool isStraightPathClear(int startRow, int startCol, int endRow, int endCol, const BoardMap& board) const;
     bool isDiagonalPathClear(int startRow, int startCol, int endRow, int endCol, const BoardMap& board) const;
+    bool isPawnMoveLegal(const Piece* piece, const std::string& targetPosition, const BoardMap& board) const;
     std::string coordsToPosition(int row, int col) const;
 };
