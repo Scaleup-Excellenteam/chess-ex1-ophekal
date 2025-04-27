@@ -86,8 +86,7 @@ BoardManager::BoardManager(const std::string& boardString){
   * @param isBlack True if searching for the black king, false for white.
   * @return The position of the king, or an empty string if not found.
   */
- std::string BoardManager::findKingPosition(bool isBlack) const
-{
+ std::string BoardManager::findKingPosition(bool isBlack) const {
 	for (const auto& [position, piece] : m_board)
 	{
 		if (piece && piece->getName() == "King" && piece->isBlack() == isBlack)
@@ -148,8 +147,7 @@ BoardManager::BoardManager(const std::string& boardString){
   * @param position The position to remove the piece from.
   * @return A raw pointer to the removed piece, or nullptr if no piece was present.
   */
- Piece* BoardManager::removePieceAt(const std::string& position)
-{
+ Piece* BoardManager::removePieceAt(const std::string& position) {
 	auto it = m_board.find(position);
 	if (it != m_board.end()) {
 		Piece* rawPointer = it->second.release();
