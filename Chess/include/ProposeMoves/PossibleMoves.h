@@ -4,7 +4,9 @@
 #include <vector>
 #include "ProposeMoves/PossibleMovement.h"
 #include "MovementValidator.h"
-#include "BoardManager.h"
+#include "Board/BoardManager.h"
+#include "PriorityQueue.h"
+
 
 class PossibleMoves
 {

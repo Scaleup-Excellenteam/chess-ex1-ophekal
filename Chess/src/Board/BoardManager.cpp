@@ -1,4 +1,4 @@
-#include "BoardManager.h"
+#include "Board/BoardManager.h"
 #include "MovementValidator.h"
 #include <cctype>
 #include <iostream>
@@ -11,8 +11,8 @@
  *
  * @param boardString A linear string representation of the board (e.g., "rnbqkbnrpp...").
  */
-BoardManager::BoardManager(const std::string& boardString){
-
+BoardManager::BoardManager(const std::string& boardString)
+{
 	for (size_t i = 0; i < boardString.size(); ++i)
 	{
 		char symbol = boardString[i];
@@ -27,18 +27,7 @@ BoardManager::BoardManager(const std::string& boardString){
 		m_board[position] = PieceFactory::createPiece(pieceName, position, isBlack);
 	}
 }
-
-
-/*
-*/
-BoardManager::BoardManager(const BoardManager& other)
-{
-	for (const auto& [pos, piece] : other.m_board) {
-		if (piece) {
-			m_board[pos] = piece->clone(); // Call virtual clone()
-		}
-	}
-}
+	
 
 
  /**

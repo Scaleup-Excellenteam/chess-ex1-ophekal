@@ -7,43 +7,19 @@
 
 
 class Board {
-public:
-    Board() = default;
-    Board(const Board& other); // Deep copy constructor
+public:   
+    Board(const std::string& boardString);
+	Board(const Board& other); 
     Piece* getPieceAt(const std::string&) const;
-    void placePiece(Piece* piece, const std::string& position);
+    void movePiece(Piece* piece, const std::string& to);
     Piece* removePieceAt(const std::string& position);
-    const std::unordered_map<std::string, std::unique_ptr<Piece>>& getState() const;
+    void placePiece(Piece* piece, const std::string& position);
+    const std::unordered_map<std::string, std::unique_ptr<Piece>>& getPieces() const;
+
 
 private:
-    std::unordered_map<std::string, std::unique_ptr<Piece>> m_board;
-};
-
-
-#pragma once
-
-#include <string>
-#include <unordered_map>
-#include <memory>
-#include "Factory/PieceFactory.h"
-
-class BoardManager
-{
-public:
-	BoardManager(const std::string& boardString);
-	BoardManager(const BoardManager& other);
-	virtual ~BoardManager() = default;
-	Piece* getPieceAt(const std::string& position) const;
-	std::string findKingPosition(bool isBlack) const;
-	void movePiece(Piece* from, const std::string& to);
-	Piece* removePieceAt(const std::string& position);
-	void placePiece(Piece* piece, const std::string& position);
-	bool IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) const;
-	const std::unordered_map<std::string, std::unique_ptr<Piece>>& getBoard() const;
-
-private:
-	std::unordered_map<std::string, std::unique_ptr<Piece>> m_board;
-
+    std::unordered_map<std::string, std::unique_ptr<Piece>> m_pieces;
+    std::string charToPieceName(char symbol) const;
 	std::string indexToPosition(int index) const;
-	std::string charToPieceName(char symbol) const;
+
 };

@@ -9,7 +9,7 @@ class PriorityQueue
 public:
 	PriorityQueue() = default;
 	void push(const T& move);	// o(n) max complexity
-	T poll();				// o(1) complexity
+	const T poll();				// o(1) complexity
 	const std::list<T>& getQueue() const;
 
 private:
@@ -74,7 +74,7 @@ const std::list<T>& PriorityQueue<T>::getQueue() const
 // Global operators (declarations)
 //-----------------------------------------------------------------------------
 template <typename T>
-std::ostream& PriorityQueue<T>::operator<<(std::ostream& os, const PriorityQueue<T>& pq) {
+std::ostream& operator<<(std::ostream& os, const PriorityQueue<T>& pq) {
 
 	os << "recommended moves:\n";
 
@@ -82,7 +82,7 @@ std::ostream& PriorityQueue<T>::operator<<(std::ostream& os, const PriorityQueue
 
 	for (const auto& move : pq.getQueue()) {
 
-		T option = poll();
+		T option = pq.poll();
 
 		// change to be the correct format!
 		os << i + 1 << ") " << T << std::endl;
@@ -91,4 +91,4 @@ std::ostream& PriorityQueue<T>::operator<<(std::ostream& os, const PriorityQueue
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const PriorityQueue<T>& pq);
+//std::ostream& operator<<(std::ostream& os, const PriorityQueue<T>& pq);

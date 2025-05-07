@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "BoardManager.h"
+#include "Board/BoardManager.h"
 #include "MoveResult.h"
 #include "MovementValidator.h"
 
