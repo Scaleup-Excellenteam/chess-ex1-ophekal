@@ -28,6 +28,14 @@ Knight::Knight(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Knight") {}
 
 
+/*
+*/
+std::unique_ptr<Piece> Knight::clone() const
+{
+	return std::make_unique<Knight>(*this);
+}
+
+
 /**
  * Checks if the direction from the current position to the target position is valid for a Knight.
  * The logic for a Knight’s movement is not implemented in this method.

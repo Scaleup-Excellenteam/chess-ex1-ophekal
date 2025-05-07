@@ -4,11 +4,13 @@
 #include <unordered_map>
 #include <memory>
 #include "Factory/PieceFactory.h"
+#include "Board/Board.h"
 
 class BoardManager
 {
 public:
 	BoardManager(const std::string& boardString);
+	BoardManager(const BoardManager& other);
 	virtual ~BoardManager() = default;
 	Piece* getPieceAt(const std::string& position) const;
 	std::string findKingPosition(bool isBlack) const;
@@ -20,7 +22,7 @@ public:
 
 private:
 	std::unordered_map<std::string, std::unique_ptr<Piece>> m_board;
-
+	Board m_board;
 	std::string indexToPosition(int index) const;
 	std::string charToPieceName(char symbol) const;
 };

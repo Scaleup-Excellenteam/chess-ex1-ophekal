@@ -35,7 +35,7 @@ void PossibleMoves::findPossibleMoves() {
 						// i need to change to the real logic behind it- didnt understand it yet
 						movement.setScore(1);
 
-						m_bestMoves.push_back(movement);
+						m_bestMoves.push(movement);
 					}
 				}
 			}

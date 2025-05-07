@@ -28,6 +28,15 @@ Pawn::Pawn(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Pawn") {}
 
 
+
+/*
+*/
+std::unique_ptr<Piece> Pawn::clone() const
+{
+	return std::make_unique<Pawn>(*this);
+}
+
+
 /**
  * Checks if the direction from the current position to the target position is valid for a Pawn.
  * The logic for a Pawn’s movement is not yet implemented in this method.

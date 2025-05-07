@@ -28,6 +28,15 @@ Queen::Queen(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Queen") {}
 
 
+
+/*
+*/
+std::unique_ptr<Piece> Queen::clone() const
+{
+	return std::make_unique<Queen>(*this);
+}
+
+
 /**
  * Checks if the direction from the current position to the target position is valid for a Queen.
  * A Queen can move diagonally, vertically, or horizontally.

@@ -29,6 +29,18 @@ BoardManager::BoardManager(const std::string& boardString){
 }
 
 
+/*
+*/
+BoardManager::BoardManager(const BoardManager& other)
+{
+	for (const auto& [pos, piece] : other.m_board) {
+		if (piece) {
+			m_board[pos] = piece->clone(); // Call virtual clone()
+		}
+	}
+}
+
+
  /**
   * Converts a character to the corresponding piece name.
   *
