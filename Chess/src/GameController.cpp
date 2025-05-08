@@ -117,45 +117,4 @@ bool GameController::isSameColorAtTarget(Piece* piece, const Piece* targetPiece)
 }
 
 
-/**
- * Simulates the move to check if it would leave the player's own king in check.
- *
- * @param piece Pointer to the piece to move.
- * @param from Original position of the piece.
- * @param to Target position of the piece.
- * @return True if the move would result in a check against the player; otherwise, false.
- */
-bool GameController::doesMoveCauseSelfCheck(Piece* piece, const std::string& from, const std::string& to) {
 
-	Piece* capturedPiece = m_boardManager.removePieceAt(to);
-	m_boardManager.movePiece(piece, to);
-
-	bool isInSelfCheck = isKingInCheck(piece->isBlack());
-
-	// Undo move
-	m_boardManager.movePiece(piece, from);
-	if (capturedPiece != nullptr){
-		m_boardManager.placePiece(capturedPiece, to); // Restore captured piece
-	}
-	return isInSelfCheck;
-}
-
-
-/**
- * Determines whether the specified player's king is under threat.
- *
- * @param kingColor True for black king, false for white king.
- * @return True if the king is in check; otherwise, false.
- */
-bool GameController::isKingInCheck(bool kingColor) const {
-	
-	std::string kingPosition = m_boardManager.findKingPosition(kingColor);
-	
-	// null - no king exists in this color
-	if (kingPosition == "") {
-		std::cout << "no king in this color" << std::endl;
-		return false;
-	}
-
-	return m_boardManager.IsIfOpponentPiecesThreatning(kingColor, kingPosition);
-}

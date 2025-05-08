@@ -6,64 +6,13 @@
 
 
 /**
- * Constructs the board from a string representation where each character represents a piece,
- * with '#' representing an empty square.
+ * Constructs the board using the Board constructor
  *
  * @param boardString A linear string representation of the board (e.g., "rnbqkbnrpp...").
  */
 BoardManager::BoardManager(const std::string& boardString)
-{
-	for (size_t i = 0; i < boardString.size(); ++i)
-	{
-		char symbol = boardString[i];
-		if (symbol == '#') {
-			continue;
-		}
-
-		std::string pieceName = charToPieceName(symbol);
-		bool isBlack = std::islower(symbol);
-		std::string position = indexToPosition(i);
-
-		m_board[position] = PieceFactory::createPiece(pieceName, position, isBlack);
-	}
-}
+	:m_board(boardString) {}
 	
-
-
- /**
-  * Converts a character to the corresponding piece name.
-  *
-  * @param symbol A character representing the piece.
-  * @return A string representing the piece type.
-  */
- std::string BoardManager::charToPieceName(char symbol) const {
-
-	switch (std::tolower(symbol))
-	{
-		case 'r': return "Rook";
-		case 'n': return "Knight";
-		case 'b': return "Bishop";
-		case 'k': return "King";
-		case 'q': return "Queen";
-		case 'p': return "Pawn";
-		default: return "";
-	}
-}
-
-
- /**
-  * Converts a linear board index to standard chess position notation.
-  *
-  * @param index The index in the board string.
-  * @return A string representing the position in algebraic notation.
-  */
- std::string BoardManager::indexToPosition(int index) const {
-
-	char row = 'a' + index / 8;
-	char col = '1' + index % 8;
-	return { row, col };
-}
-
 
  /**
   * Retrieves the piece at a specific board position.
@@ -73,8 +22,9 @@ BoardManager::BoardManager(const std::string& boardString)
   */
  Piece* BoardManager::getPieceAt(const std::string& position) const {
 
-	auto it = m_board.find(position);
-	if (it == m_board.end()) {
+	
+	auto it = m_board.getPieces().find(position);
+	if (it == m_board.getPieces().end()) {
 		return nullptr;
 	}
 	return it->second.get();
@@ -88,7 +38,7 @@ BoardManager::BoardManager(const std::string& boardString)
   * @return The position of the king, or an empty string if not found.
   */
  std::string BoardManager::findKingPosition(bool isBlack) const {
-	for (const auto& [position, piece] : m_board)
+	for (const auto& [position, piece] : m_board.getPieces())
 	{
 		if (piece && piece->getName() == "King" && piece->isBlack() == isBlack)
 		{
@@ -111,12 +61,14 @@ BoardManager::BoardManager(const std::string& boardString)
  bool BoardManager::IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) const {
 
 	MovementValidator validator;
+	std::unordered_map<std::string, std::unique_ptr<Piece>> board = m_board.getPieces();
 
-	for (const auto& [position, piece] : m_board) {
+
+	for (const auto& [position, piece] : board) {
 
 		if (piece && piece->isBlack() != kingColor) {
 			if (piece->isDirectionValid(targetPosition)) {
-				if (validator.isMoveLegal(piece.get(), targetPosition, m_board)) {
+				if (validator.isMoveLegal(piece.get(), targetPosition, m_board.getPieces())) {
 					return true;
 				}
 			}
@@ -134,9 +86,11 @@ BoardManager::BoardManager(const std::string& boardString)
   */
  void BoardManager::movePiece(Piece* piece, const std::string& to) {
 
+	 std::unordered_map<std::string, std::unique_ptr<Piece>> board = m_board.getPieces();
+
 	std::string from = piece->getPosition();
-	m_board[to] = std::move(m_board[from]);
-	m_board.erase(from);
+	board[to] = std::move(board[from]);
+	board.erase(from);
 	piece->move(to);
 
 }
@@ -149,10 +103,13 @@ BoardManager::BoardManager(const std::string& boardString)
   * @return A raw pointer to the removed piece, or nullptr if no piece was present.
   */
  Piece* BoardManager::removePieceAt(const std::string& position) {
-	auto it = m_board.find(position);
-	if (it != m_board.end()) {
+
+	std::unordered_map<std::string, std::unique_ptr<Piece>> board = m_board.getPieces();
+
+	auto it = board.find(position);
+	if (it != board.end()) {
 		Piece* rawPointer = it->second.release();
-		m_board.erase(it);
+		board.erase(it);
 		return rawPointer;
 	}
 	return nullptr;
@@ -166,9 +123,12 @@ BoardManager::BoardManager(const std::string& boardString)
   * @param position The position to place the piece at.
   */
  void BoardManager::placePiece(Piece* piece, const std::string& position){
+	
+	 std::unordered_map<std::string, std::unique_ptr<Piece>> board = m_board.getPieces();
+
 	if (piece) {
 		piece->move(position);
-		m_board[position] = std::unique_ptr<Piece>(piece);
+		board[position] = std::unique_ptr<Piece>(piece);
 	}
 }
 
@@ -181,3 +141,49 @@ BoardManager::BoardManager(const std::string& boardString)
  const std::unordered_map<std::string, std::unique_ptr<Piece>>& BoardManager::getBoard() const {
 	return m_board;
 }
+
+
+ /**
+ * Simulates the move to check if it would leave the player's own king in check.
+ *
+ * @param piece Pointer to the piece to move.
+ * @param from Original position of the piece.
+ * @param to Target position of the piece.
+ * @return True if the move would result in a check against the player; otherwise, false.
+ */
+ bool BoardManager::doesMoveCauseSelfCheck(Piece* piece, const std::string& from, const std::string& to) {
+
+	 Piece* capturedPiece = removePieceAt(to);
+	 movePiece(piece, to);
+
+	 bool isInSelfCheck = isKingInCheck(piece->isBlack());
+
+	 // Undo move
+	 movePiece(piece, from);
+	 if (capturedPiece != nullptr) {
+		 placePiece(capturedPiece, to); // Restore captured piece
+	 }
+	 return isInSelfCheck;
+ }
+
+
+
+ /**
+  * Determines whether the specified player's king is under threat.
+  *
+  * @param kingColor True for black king, false for white king.
+  * @return True if the king is in check; otherwise, false.
+  */
+ bool BoardManager::isKingInCheck(bool kingColor) const {
+
+	 std::string kingPosition = findKingPosition(kingColor);
+
+	 //add here exception!!!!
+	 // null - no king exists in this color
+	 if (kingPosition == "") {
+		 std::cout << "no king in this color" << std::endl;
+		 return false;
+	 }
+
+	 return IsIfOpponentPiecesThreatning(kingColor, kingPosition);
+ }

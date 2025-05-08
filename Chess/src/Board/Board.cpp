@@ -31,7 +31,7 @@ Board::Board(const Board& other) {
 
     for (const auto& [pos, piece] : other.m_pieces) {
         if (piece) {
-            m_pieces[pos] = piece->clone(); // Call virtual clone()
+            m_pieces[pos] = piece->clone();
         }
     }
 }
@@ -138,7 +138,7 @@ void Board::placePiece(Piece* piece, const std::string& position) {
 
 /*
 */
-const std::unordered_map<std::string, std::unique_ptr<Piece>>& Board::getPieces() const
+std::unordered_map<std::string, std::unique_ptr<Piece>>& Board::getPieces()
 {
     return m_pieces;
 }
