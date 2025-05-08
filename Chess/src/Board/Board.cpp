@@ -11,8 +11,8 @@
  *
  * @param boardString A linear string representation of the board (e.g., "rnbqkbnrpp...").
  */
-Board::Board(const std::string& boardString)
-{
+Board::Board(const std::string& boardString) {
+	
 	for (size_t i = 0; i < boardString.size(); ++i)
 	{
 		char symbol = boardString[i];
@@ -25,6 +25,19 @@ Board::Board(const std::string& boardString)
 		std::string position = indexToPosition(i);
 
 		m_board[position] = PieceFactory::createPiece(pieceName, position, isBlack);
+	}
+}
+
+
+/*
+* copy ctor
+*/
+Board::Board(const Board& other){
+
+	for (const auto& [pos, piece] : other.m_board) {
+		if (piece) {
+			m_board[pos] = piece->clone();
+		}
 	}
 }
 	

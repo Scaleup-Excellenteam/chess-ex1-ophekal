@@ -25,4 +25,7 @@ private:
 	bool canLegallyMove(Piece* piece, const std::string& target);
 	bool isSameColorAtTarget(Piece* piece, const Piece* targetPiece) const;
 	bool doesMoveCauseSelfCheck(Piece* piece, const std::string& from, const std::string& to);
+	
+	//void printRecommendedMoves(); will use the priority queue printing! he priority queue is in possible moves- therefore neeed a possible moves varuable!
+	//PossibleMoves m_recommendMoves;
 };
