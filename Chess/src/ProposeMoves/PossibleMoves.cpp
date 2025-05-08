@@ -3,12 +3,12 @@
 
 
 PossibleMoves::PossibleMoves(const std::string& boardString, const bool& blackTurn, const MovementValidator& movementValidator)
-    :m_boardManager(boardString), m_isBlackTurn(blackTurn), m_movementValidator(movementValidator) {}
+    :m_board(boardString), m_isBlackTurn(blackTurn), m_movementValidator(movementValidator) {}
 
 
 void PossibleMoves::findPossibleMoves() {
 
-	const auto& board = m_boardManager.getBoard();
+	const auto& board = m_board.getBoard();
 
 	for (const auto& [position, piece] : board)
 	{

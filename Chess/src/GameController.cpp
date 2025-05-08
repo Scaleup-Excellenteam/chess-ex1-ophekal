@@ -11,7 +11,7 @@
  * @param boardString A linear board representation used to initialize the game.
  */
 GameController::GameController (const std::string& boardString)
-	: m_boardManager(boardString), m_isBlackTurn(false) {}
+	: m_board(boardString), m_isBlackTurn(false) {}
 
 
 /**
@@ -46,8 +46,8 @@ MoveResult GameController::validateMovement(const std::string& response)
 	std::string from = response.substr(0, 2);
 	std::string target = response.substr(2, 2);
 
-	Piece* piece = m_boardManager.getPieceAt(from);
-	const Piece* targetPiece = m_boardManager.getPieceAt(target);
+	Piece* piece = m_board.getPieceAt(from);
+	const Piece* targetPiece = m_board.getPieceAt(target);
 
 	if (!isValidSource(piece)) return MoveResult::NoPieceAtSource;
 	if (!isMyPiece(piece)) return MoveResult::OpponentPieceAtSource;
@@ -55,7 +55,7 @@ MoveResult GameController::validateMovement(const std::string& response)
 	if (!canLegallyMove(piece, target)) return  MoveResult::InvalidMoveOrBlocked;
 	if (doesMoveCauseSelfCheck(piece, from, target)) return MoveResult::MoveCausesCheck;
 
-	m_boardManager.movePiece(piece, target);
+	m_board.movePiece(piece, target);
 	updateIsBlackTurn(!piece->isBlack());
 
 	bool isOpponentInCheck = isKingInCheck(!piece->isBlack());
@@ -100,7 +100,7 @@ bool GameController::isMyPiece(Piece* piece) const {
  */
 bool GameController::canLegallyMove(Piece* piece, const std::string& target) {
 
-	return m_movementValidator.isMoveLegal(piece, target, m_boardManager.getBoard());
+	return m_movementValidator.isMoveLegal(piece, target, m_board.getBoard());
 }
 
 
@@ -127,15 +127,15 @@ bool GameController::isSameColorAtTarget(Piece* piece, const Piece* targetPiece)
  */
 bool GameController::doesMoveCauseSelfCheck(Piece* piece, const std::string& from, const std::string& to) {
 
-	Piece* capturedPiece = m_boardManager.removePieceAt(to);
-	m_boardManager.movePiece(piece, to);
+	Piece* capturedPiece = m_board.removePieceAt(to);
+	m_board.movePiece(piece, to);
 
 	bool isInSelfCheck = isKingInCheck(piece->isBlack());
 
 	// Undo move
-	m_boardManager.movePiece(piece, from);
+	m_board.movePiece(piece, from);
 	if (capturedPiece != nullptr){
-		m_boardManager.placePiece(capturedPiece, to); // Restore captured piece
+		m_board.placePiece(capturedPiece, to); // Restore captured piece
 	}
 	return isInSelfCheck;
 }
@@ -149,7 +149,7 @@ bool GameController::doesMoveCauseSelfCheck(Piece* piece, const std::string& fro
  */
 bool GameController::isKingInCheck(bool kingColor) const {
 	
-	std::string kingPosition = m_boardManager.findKingPosition(kingColor);
+	std::string kingPosition = m_board.findKingPosition(kingColor);
 	
 	// null - no king exists in this color
 	if (kingPosition == "") {
@@ -157,5 +157,28 @@ bool GameController::isKingInCheck(bool kingColor) const {
 		return false;
 	}
 
-	return m_boardManager.IsIfOpponentPiecesThreatning(kingColor, kingPosition);
+	return IsIfOpponentPiecesThreatning(kingColor, kingPosition);
+}
+
+
+/**
+ * Checks whether any opposing pieces are threatening a given position.
+ *
+ * @param kingColor The color of the king being threatened (true = black, false = white).
+ * @param targetPosition The position to check.
+ * @return True if any opponent pieces threaten the king if piece is moved to targetPosition, false otherwise.
+ */
+bool GameController::IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) const {
+
+	for (const auto& [position, piece] : m_board.getBoard()) {
+
+		if (piece && piece->isBlack() != kingColor) {
+			if (piece->isDirectionValid(targetPosition)) {
+				if (m_movementValidator.isMoveLegal(piece.get(), targetPosition, m_board.getBoard())) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
