@@ -35,6 +35,11 @@ std::unique_ptr<Piece> King::clone() const
 	return std::make_unique<King>(*this);
 }
 
+int King::getValue() const
+{
+	return 100;
+}
+
 
 
 /**

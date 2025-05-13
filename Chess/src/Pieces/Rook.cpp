@@ -35,6 +35,11 @@ std::unique_ptr<Piece> Rook::clone() const
 	return std::make_unique<Rook>(*this);
 }
 
+int Rook::getValue() const
+{
+	return 5;
+}
+
 
 /**
  * Checks if the direction from the current position to the target position is valid for a Rook.

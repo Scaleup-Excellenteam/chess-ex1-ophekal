@@ -8,7 +8,7 @@ private:
 
 	// maybe change to std::pair!
 
-	int m_score;
+	int m_score = 0;
 	std::string m_from;
 	std::string m_destination;
 
@@ -24,6 +24,6 @@ public:
 };
 
 
-// Global operators (declarations)
+// Global operator overloads
 bool operator>(const PossibleMovement& m1, const PossibleMovement& m2);
 std::ostream& operator<<(std::ostream& os, const PossibleMovement& obj);

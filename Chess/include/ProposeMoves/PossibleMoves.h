@@ -1,5 +1,39 @@
 #pragma once
 
+#include "Board/Board.h"
+#include "MovementValidator.h"
+#include "PriorityQueue.h"
+#include "ProposeMoves/PossibleMovement.h"
+#include <vector>
+#include <string>
+
+class PossibleMoves {
+public:
+    PossibleMoves(const std::string& boardString, const bool& blackTurn, const MovementValidator& movementValidator);
+
+    void findPossibleMoves(int numOfTurns);
+    const PriorityQueue<PossibleMovement>& getBestMoves() const;
+
+private:
+    Board m_board;
+    bool m_isBlackTurn;
+    MovementValidator m_movementValidator;
+    PriorityQueue<PossibleMovement> m_bestMoves;
+
+    // Helper methods for the Min-Max algorithm
+    int calculateMoveScore(Board& boardBefore, Board& boardAfter, const std::string& from, const std::string& to);
+    int minMax(Board& board, bool isBlackTurn, int depth, int maxDepth);
+    int evaluateBoard(const Board& board, bool forBlack) const;
+    int getPieceValue(const Piece* piece) const;
+
+    // Utility methods
+    std::vector<std::string> allPositionsOnBoard() const;
+};
+
+
+/**
+/#pragma once
+
 #include <string>
 #include <vector>
 #include "ProposeMoves/PossibleMovement.h"
@@ -12,17 +46,27 @@ class PossibleMoves
 {
 public:
 	PossibleMoves(const std::string& boardString, const bool& blackTurn, const MovementValidator& movementValidator);
+	
 	void findPossibleMoves(int numOfTurns);
-	void checkAllPossibleMovesForPiece(const std::unique_ptr<Piece>& piece, int numOfTurns);
-	bool isMoveLegal(const std::unique_ptr<Piece>& piece, const std::string targetPos);
 	void switchCurrentPlayersTurn();
-	void executeTurn(const std::unique_ptr<Piece>& piece, const std::string& targPos, Board& simulationBoard);
+	const PriorityQueue<PossibleMovement>& getBestMoves() const;
+
+	
 
 
 
 private:
-	Board m_board;									// thats how will access board
-	bool m_isBlackTurn;								// thats how will know who's turn it is
-	MovementValidator m_movementValidator;			// that's how will validate the possible move
-	PriorityQueue<PossibleMovement> m_bestMoves;	// that's the pq we will keep the best moves for the player!!
+	
+	Board m_board;									
+	bool m_isBlackTurn;							
+	MovementValidator m_movementValidator;		
+	PriorityQueue<PossibleMovement> m_bestMoves;	
+	
+	int evaluateBoard(const Board& board, bool forBlack);
+	int simulate(Board board, bool isBlackTurn, int depth, int maxDepth);
+	std::vector<std::string> allPositionsOnBoard() const;
+	int calculateMoveScore(Board& boardBefore, Board& boardAfter, const std::string& from, const std::string& to);
+
+	
 };
+*/

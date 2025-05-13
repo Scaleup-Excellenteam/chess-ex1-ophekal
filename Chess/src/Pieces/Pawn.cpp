@@ -36,6 +36,11 @@ std::unique_ptr<Piece> Pawn::clone() const
 	return std::make_unique<Pawn>(*this);
 }
 
+int Pawn::getValue() const
+{
+	return 1;
+}
+
 
 /**
  * Checks if the direction from the current position to the target position is valid for a Pawn.

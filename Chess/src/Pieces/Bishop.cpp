@@ -35,6 +35,10 @@ std::unique_ptr<Piece> Bishop::clone() const
 	return std::make_unique<Bishop>(*this);
 }
 
+/*
+*/
+int Bishop::getValue() const { return 3; }
+
 
 /**
  * Checks if the direction from the current position to the target position is valid for a Bishop.

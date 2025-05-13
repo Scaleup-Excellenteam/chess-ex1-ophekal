@@ -38,6 +38,6 @@ bool operator>(const PossibleMovement& m1, const PossibleMovement& m2) {
 
 
 std::ostream& operator<<(std::ostream& os, const PossibleMovement& obj) {
-	os << obj.getFrom() << " " << obj.getDestination();
+	os << obj.getFrom() << " -> " << obj.getDestination();
 	return os;
 }

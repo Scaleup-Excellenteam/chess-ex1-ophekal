@@ -13,6 +13,7 @@ public:
 	Piece(const std::string& position, bool isBlack, const std::string& name);
 	virtual std::unique_ptr<Piece> clone() const = 0;
 	virtual ~Piece() = default;
+	virtual int getValue() const = 0;
 	virtual bool isDirectionValid(const std::string& targetPosition) const = 0;
 	void move(const std::string& targetPosition);
 	std::string getName() const;

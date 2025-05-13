@@ -36,6 +36,11 @@ std::unique_ptr<Piece> Queen::clone() const
 	return std::make_unique<Queen>(*this);
 }
 
+int Queen::getValue() const
+{
+	return 9;
+}
+
 
 /**
  * Checks if the direction from the current position to the target position is valid for a Queen.
