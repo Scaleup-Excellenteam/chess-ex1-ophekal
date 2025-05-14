@@ -9,22 +9,25 @@
 
 class PossibleMoves {
 public:
-    PossibleMoves(const std::string& boardString, const bool& blackTurn, const MovementValidator& movementValidator);
 
-    void findPossibleMoves(int numOfTurns);
+    PossibleMoves(const std::string& boardString, const MovementValidator& movementValidator);
+    void findPossibleMoves(int numOfTurns, bool isBlack);
     const PriorityQueue<PossibleMovement>& getBestMoves() const;
 
 	void printBestMoves() const;
 
 private:
     Board m_board;
-    bool m_isBlackTurn;
+    bool m_recommendForBlack = false;	// the color of the player we recommend the moves
+	bool m_isBlackTurn = false;			// the color of the current player in the recursion
     MovementValidator m_movementValidator;
     PriorityQueue<PossibleMovement> m_bestMoves;
 
+
     // Helper methods for the Min-Max algorithm
     int calculateMoveScore(Board& boardBefore, Board& boardAfter, const std::string& from, const std::string& to);
-    int minMax(Board& board, bool isBlackTurn, int depth, int maxDepth);
+	void switchPlayerTurn();
+	int minMax(Board& board, bool isBlackTurn, int depth, int maxDepth);
     int evaluateBoard(const Board& board, bool forBlack) const;
     int getPieceValue(const Piece* piece) const;
 

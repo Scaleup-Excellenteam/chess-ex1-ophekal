@@ -11,7 +11,7 @@
  * @param boardString A linear board representation used to initialize the game.
  */
 GameController::GameController (const std::string& boardString, int wantedDepth)
-	: m_board(boardString), m_isBlackTurn(false), m_depth(wantedDepth), m_recommendMoves(boardString, false, m_movementValidator) {}
+	: m_board(boardString), m_isBlackTurn(false), m_depth(wantedDepth), m_recommendMoves(boardString, m_movementValidator) {}
 
 
 /**
@@ -185,7 +185,7 @@ bool GameController::IsIfOpponentPiecesThreatning(bool kingColor, std::string ta
 
 void GameController::recommendMoves() {
 	
-	m_recommendMoves.findPossibleMoves(m_depth);
+	m_recommendMoves.findPossibleMoves(m_depth, m_isBlackTurn);
 	PriorityQueue<PossibleMovement> bestMoves = m_recommendMoves.getBestMoves();
 	
 	std::cout << bestMoves << std::endl;
