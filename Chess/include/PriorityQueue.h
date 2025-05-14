@@ -82,10 +82,7 @@ std::ostream& operator<<(std::ostream& os, const PriorityQueue<T>& pq) {
 
 	for (const auto& move : pq.getQueue()) {
 
-		T option = pq.poll();
-
-		// change to be the correct format!
-		os << i + 1 << ") " << T << std::endl;
+		os << i++ << ") " << move << std::endl;
 	}
 	
 	return os;

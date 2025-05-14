@@ -5,9 +5,6 @@
 
 class PossibleMovement {
 private:
-
-	// maybe change to std::pair!
-
 	int m_score = 0;
 	std::string m_from;
 	std::string m_destination;

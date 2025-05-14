@@ -9,9 +9,16 @@ int main()
 	//string board = "R#BQKB#RPPPPPPPP################################ppppppppr#bqkb#r"; 
 	Chess a(board);
 
-	GameController controller(board);
+	int wantedDepth;
+	std::cout << "Enter the number of turns you want to take into consideration\n";
+	std::cin >> wantedDepth;
+
+	GameController controller(board, wantedDepth);
 
 	int codeResponse = 0;
+
+	controller.recommendMoves();
+
 	string res = a.getInput();
 	while (res != "exit")
 	{
@@ -28,9 +35,9 @@ int main()
 		41 - the last movement was legal and cause check 
 		42 - the last movement was legal, next turn 
 		*/
-
 		/**/ 
 		{ 
+			controller.recommendMoves();
 			MoveResult result = controller.validateMovement(res);
 			codeResponse = int(result);
 		}

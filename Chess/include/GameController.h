@@ -4,17 +4,22 @@
 #include "Board/Board.h"
 #include "MoveResult.h"
 #include "MovementValidator.h"
+#include "ProposeMoves/PossibleMoves.h"
 
 class GameController
 {
 public:
-	GameController(const std::string& boardString);
+	GameController(const std::string& boardString, int wantedDepth);
 	MoveResult validateMovement(const std::string& response);
+	void recommendMoves();
+
 
 private:
 	Board m_board;
 	bool m_isBlackTurn;
 	MovementValidator m_movementValidator;
+	int m_depth;
+	PossibleMoves m_recommendMoves;
 	
 	bool IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) const;
 	void updateIsBlackTurn(bool isBlackTurn);
