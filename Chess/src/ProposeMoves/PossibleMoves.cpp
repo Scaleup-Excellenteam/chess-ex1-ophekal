@@ -2,8 +2,8 @@
 #include "PriorityQueue.h"
 #include <climits>
 #include <algorithm>
+#include <iostream> // Added for debug prints
 
-// Piece values
 const int PAWN_VALUE = 100;
 const int KNIGHT_VALUE = 320;
 const int BISHOP_VALUE = 330;
@@ -11,23 +11,20 @@ const int ROOK_VALUE = 500;
 const int QUEEN_VALUE = 900;
 const int KING_VALUE = 20000;
 
-// Scoring modifiers
 const int THREATENED_BY_WEAKER_PENALTY = -200;
 const int THREATENS_STRONGER_BONUS = 150;
-const int CAPTURE_BONUS_MULTIPLIER = 10; // Bonus multiplier for capturing pieces
+const int CAPTURE_BONUS_MULTIPLIER = 10;
 
-/**
- * Constructor for PossibleMoves
- */
+
+
+
 PossibleMoves::PossibleMoves(const std::string& boardString, const bool& blackTurn, const MovementValidator& movementValidator)
-    : m_board(boardString), m_isBlackTurn(blackTurn), m_movementValidator(movementValidator) {}
+    : m_board(boardString), m_isBlackTurn(blackTurn), m_movementValidator(movementValidator) {
+    std::cout << "PossibleMoves constructed with boardString: " << boardString << std::endl;
+}
 
-/**
- * Gets piece value based on its type
- */
 int PossibleMoves::getPieceValue(const Piece* piece) const {
     if (!piece) return 0;
-
     const std::string& name = piece->getName();
     if (name == "Pawn") return PAWN_VALUE;
     if (name == "Knight") return KNIGHT_VALUE;
@@ -35,162 +32,170 @@ int PossibleMoves::getPieceValue(const Piece* piece) const {
     if (name == "Rook") return ROOK_VALUE;
     if (name == "Queen") return QUEEN_VALUE;
     if (name == "King") return KING_VALUE;
-
     return 0;
 }
 
-/**
- * Calculates the score for a specific move by analyzing:
- * 1. Capture value
- * 2. Whether the moved piece is threatened by weaker pieces
- * 3. Whether the moved piece threatens stronger opponent pieces
- */
 int PossibleMoves::calculateMoveScore(Board& boardBefore, Board& boardAfter, const std::string& from, const std::string& to) {
+    std::cout << "[calculateMoveScore] From " << from << " To " << to << std::endl;
     auto movedPiece = boardAfter.getPieceAt(to);
-    if (!movedPiece) return 0;
+    if (!movedPiece) {
+        std::cout << "No moved piece found at " << to << std::endl;
+        return 0;
+    }
 
-    auto capturedPiece = boardBefore.getPieceAt(to); // If there was a piece in the destination
     int score = 0;
-
-    // Capture value - higher bonus for capturing valuable pieces
+    auto capturedPiece = boardBefore.getPieceAt(to);
     if (capturedPiece && capturedPiece->isBlack() != movedPiece->isBlack()) {
         int captureValue = getPieceValue(capturedPiece);
         score += captureValue * CAPTURE_BONUS_MULTIPLIER;
+        std::cout << "Captured piece at " << to << " worth " << captureValue << " -> score = " << score << std::endl;
     }
 
-    // Check if threatened by weaker piece after the move
     for (const auto& [pos, enemyPiece] : boardAfter.getBoard()) {
         if (enemyPiece && enemyPiece->isBlack() != movedPiece->isBlack()) {
             if (m_movementValidator.isMoveLegal(enemyPiece.get(), to, boardAfter.getBoard())) {
                 if (getPieceValue(enemyPiece.get()) < getPieceValue(movedPiece)) {
                     score += THREATENED_BY_WEAKER_PENALTY;
+                    std::cout << "Threatened by weaker piece at " << pos << std::endl;
                 }
             }
         }
     }
 
-    // Check if threatens stronger pieces
     for (const auto& [pos, targetPiece] : boardAfter.getBoard()) {
         if (targetPiece && targetPiece->isBlack() != movedPiece->isBlack()) {
             if (m_movementValidator.isMoveLegal(movedPiece, pos, boardAfter.getBoard())) {
                 if (getPieceValue(targetPiece.get()) > getPieceValue(movedPiece)) {
                     score += THREATENS_STRONGER_BONUS;
+                    std::cout << "Threatens stronger piece at " << pos << std::endl;
                 }
             }
         }
     }
 
+    std::cout << "Final move score: " << score << std::endl;
     return score;
 }
 
-/**
- * Find all possible moves for the current player and evaluate them using Min-Max algorithm
- */
+
+
+
 void PossibleMoves::findPossibleMoves(int numOfTurns) {
-    // Clear the priority queue
+    std::cout << "[findPossibleMoves] Start - numOfTurns: " << numOfTurns << std::endl;
+    std::cout << "===== STARTING NEW MOVE SEARCH =====" << std::endl;
+
+    // Clear previous best moves
     while (!m_bestMoves.getQueue().empty()) {
         m_bestMoves.poll();
     }
 
-    // For each piece of the current player
+    // For statistics
+    int totalMovesEvaluated = 0;
+    int movesWithNonZeroScore = 0;
+
     for (const auto& [pos, piece] : m_board.getBoard()) {
         if (piece && piece->isBlack() == m_isBlackTurn) {
+            std::cout << "Analyzing piece at " << pos << " (" << piece->getName() << ")" << std::endl;
 
-            // For each possible position on the board
             for (const std::string& target : allPositionsOnBoard()) {
-                // Check if the movement is legal for that piece
-                if (!m_movementValidator.isMoveLegal(piece.get(), target, m_board.getBoard())) {
+                if (target == pos) continue; // Skip moves to the same position
+
+                if (!m_movementValidator.isMoveLegal(piece.get(), target, m_board.getBoard())) continue;
+
+                totalMovesEvaluated++;
+
+                // Check if it's a capture move
+                auto targetPiece = m_board.getPieceAt(target);
+                bool isCapture = (targetPiece != nullptr && targetPiece->isBlack() != piece->isBlack());
+
+                std::cout << "  Testing move: " << pos << " -> " << target
+                    << (isCapture ? " (CAPTURE)" : "") << std::endl;
+
+                Board clonedBoard(m_board);
+                Piece* clonedPiece = clonedBoard.getPieceAt(pos);
+                if (!clonedPiece) {
+                    std::cout << "  Cloned piece at " << pos << " is null" << std::endl;
                     continue;
                 }
 
-                // Clone the board and make the move
-                Board clonedBoard(m_board);
-                Piece* clonedPiece = clonedBoard.getPieceAt(pos);
-                if (!clonedPiece) continue;
-
-                // Calculate immediate move score
-                int immediateScore = calculateMoveScore(m_board, clonedBoard, pos, target);
-
+                // Move first, then calculate score
                 clonedBoard.movePiece(clonedPiece, target);
 
-                // Get opponent's best response through min-max
+                int immediateScore = calculateMoveScore(m_board, clonedBoard, pos, target);
+                std::cout << "  Immediate score: " << immediateScore << std::endl;
+
                 int opponentBestScore = 0;
                 if (numOfTurns > 1) {
+                    std::cout << "  Calculating opponent's best response..." << std::endl;
                     opponentBestScore = minMax(clonedBoard, !m_isBlackTurn, 1, numOfTurns);
+                    std::cout << "  Opponent's best score: " << opponentBestScore << std::endl;
                 }
 
-                // Final score is our score minus opponent's best score
                 int finalScore = immediateScore - opponentBestScore;
+                std::cout << "  Final evaluated score: " << finalScore << std::endl;
 
-                // Create and store the possible movement
+                if (finalScore != 0) {
+                    movesWithNonZeroScore++;
+                }
+
                 PossibleMovement movement;
                 movement.setFrom(pos);
                 movement.setDestination(target);
                 movement.setScore(finalScore);
 
-                // Push to priority queue (will keep only top 5)
                 m_bestMoves.push(movement);
             }
         }
     }
+
+    std::cout << "Total moves evaluated: " << totalMovesEvaluated << std::endl;
+    std::cout << "Moves with non-zero score: " << movesWithNonZeroScore << std::endl;
+    std::cout << "[findPossibleMoves] End" << std::endl;
+    printBestMoves();
 }
 
-/**
- * Evaluates the current board state, returning a score from the perspective of the player
- */
+
+
+
+
+
 int PossibleMoves::evaluateBoard(const Board& board, bool forBlack) const {
     int score = 0;
-
-    // Material advantage evaluation
     for (const auto& [pos, piece] : board.getBoard()) {
         if (!piece) continue;
 
         int value = getPieceValue(piece.get());
-        if (piece->isBlack() == forBlack) {
-            score += value;
-        }
-        else {
-            score -= value;
-        }
+        score += (piece->isBlack() == forBlack) ? value : -value;
     }
 
     return score;
 }
 
-/**
- * Naive Min-Max algorithm without pruning
- */
+
 int PossibleMoves::minMax(Board& board, bool isBlackTurn, int depth, int maxDepth) {
-    // Terminal condition: maximum depth reached
+    
     if (depth == maxDepth) {
         return evaluateBoard(board, m_isBlackTurn);
     }
 
-    // Initialize the best score depending on whether we're maximizing or minimizing
     int bestScore = (isBlackTurn == m_isBlackTurn) ? INT_MIN : INT_MAX;
 
-    // For each piece of the current player
     for (const auto& [pos, piece] : board.getBoard()) {
         if (!piece || piece->isBlack() != isBlackTurn) continue;
 
-        // For each possible position on the board
         for (const std::string& target : allPositionsOnBoard()) {
-            // Check if the movement is legal for that piece
-            if (!m_movementValidator.isMoveLegal(piece.get(), target, board.getBoard())) {
-                continue;
-            }
+            
+            if (target == pos) continue;
+            
+            if (!m_movementValidator.isMoveLegal(piece.get(), target, board.getBoard())) continue;
 
-            // Clone board and make move
             Board clonedBoard(board);
             Piece* clonedPiece = clonedBoard.getPieceAt(pos);
             if (!clonedPiece) continue;
 
             clonedBoard.movePiece(clonedPiece, target);
-
-            // Recursive evaluation
             int score = minMax(clonedBoard, !isBlackTurn, depth + 1, maxDepth);
 
-            // Update best score (max for current player, min for opponent)
             if (isBlackTurn == m_isBlackTurn) {
                 bestScore = std::max(bestScore, score);
             }
@@ -203,12 +208,8 @@ int PossibleMoves::minMax(Board& board, bool isBlackTurn, int depth, int maxDept
     return bestScore;
 }
 
-/**
- * Returns all valid positions on the chess board
- */
 std::vector<std::string> PossibleMoves::allPositionsOnBoard() const {
     std::vector<std::string> positions;
-    positions.reserve(64); // 8x8 board
 
     for (char row = 'a'; row <= 'h'; ++row) {
         for (char col = '1'; col <= '8'; ++col) {
@@ -219,157 +220,17 @@ std::vector<std::string> PossibleMoves::allPositionsOnBoard() const {
     return positions;
 }
 
-/**
- * Returns the priority queue containing the best moves
- */
 const PriorityQueue<PossibleMovement>& PossibleMoves::getBestMoves() const {
     return m_bestMoves;
 }
 
 
-/**
-/
-
-#include "ProposeMoves/PossibleMoves.h"
-#include "PriorityQueue.h"
-
-
-PossibleMoves::PossibleMoves(const std::string& boardString, const bool& blackTurn, const MovementValidator& movementValidator)
-    :m_board(boardString), m_isBlackTurn(blackTurn), m_movementValidator(movementValidator) {}
-
-
-// Scores the move (capture, threat, etc.)
-int PossibleMoves::calculateMoveScore(Board& boardBefore, Board& boardAfter, const std::string& from, const std::string& to) {
-	
-	auto movedPiece = boardAfter.getPieceAt(to);
-	auto capturedPiece = boardBefore.getPieceAt(to); // If there was a piece in the destination
-
-	int score = 0;
-
-	// Capture value
-	if (capturedPiece && capturedPiece->isBlack() != movedPiece->isBlack()) {
-		score += capturedPiece->getValue();
-	}
-
-	// check if threatened by weaker piece
-	for (const auto& [pos, enemyPiece] : boardAfter.getBoard()) {
-		if (enemyPiece && enemyPiece->isBlack() != movedPiece->isBlack()) {
-			if (m_movementValidator.isMoveLegal(enemyPiece.get(), to, boardAfter.getBoard())) {
-				if (enemyPiece->getValue() < movedPiece->getValue()) {
-					score -= 2;
-				}
-			}
-		}
-	}
-
-	// check if threatens stronger pieces
-	for (const auto& [pos, targetPiece] : boardAfter.getBoard()) {
-		if (targetPiece && targetPiece->isBlack() != movedPiece->isBlack()) {
-			if (m_movementValidator.isMoveLegal(movedPiece, pos, boardAfter.getBoard())) {
-				if (targetPiece->getValue() > movedPiece->getValue()) {
-					score += 3;
-				}
-			}
-		}
-	}
-
-	return score;
+// Add this function to your PossibleMoves class
+void PossibleMoves::printBestMoves() const {
+    std::cout << "=== TOP MOVES IN QUEUE ===" << std::endl;
+    int i = 1;
+    for (const auto& move : m_bestMoves.getQueue()) {
+        std::cout << i++ << ") " << move << " with score: " << move.getScore() << std::endl;
+    }
+    std::cout << "=========================" << std::endl;
 }
-
-
-void PossibleMoves::findPossibleMoves(int numOfTurns) {
-
-	for (const auto& [pos, piece] : m_board.getBoard()) {
-		if (piece && piece->isBlack() == m_isBlackTurn) {
-			for (std::string target : allPositionsOnBoard()) {
-
-				// check if the movement is legal for that piece
-				if (!m_movementValidator.isMoveLegal(piece.get(), target, m_board.getBoard())) continue;
-
-				Board clonedBoard(m_board);
-				clonedBoard.movePiece(clonedBoard.getPieceAt(pos), target);
-
-				int moveScore = calculateMoveScore(m_board, clonedBoard, pos, target, m_isBlackTurn);
-				int opponentScore = simulate(clonedBoard, !m_isBlackTurn, 1, numOfTurns);
-
-				int finalScore = moveScore - opponentScore;
-
-				PossibleMovement movement;
-				movement.setFrom(pos);
-				movement.setDestination(target);
-				movement.setScore(finalScore);
-
-				m_bestMoves.push(movement);
-			}
-		}
-	}
-}
-
-
-
-int PossibleMoves::evaluateBoard(const Board &board, bool forBlack) {
-
-	int score = 0;
-
-	for (const auto& [pos, piece] : board.getBoard()) {
-		if (!piece) continue;
-
-		int value = piece->getValue(); 
-		score += (piece->isBlack() == forBlack) ? value : -value;
-	}
-	return score;
-}
-
-
-
-int PossibleMoves::simulate(Board board, bool isBlackTurn, int depth, int maxDepth)
-{
-	if (depth == maxDepth) {
-		return evaluateBoard(board, isBlackTurn);
-	}
-
-	int bestScore = m_isBlackTurn ? INT_MIN : INT_MAX;
-
-	for (const auto& [pos, piece] : m_board.getBoard()) {
-
-		if (piece && piece->isBlack() == m_isBlackTurn) {
-
-			for (std::string target : allPositionsOnBoard()) {
-
-				// check if the movement is legal for that piece
-				if (!m_movementValidator.isMoveLegal(piece.get(), target, m_board.getBoard())) continue;
-
-				Board clonedBoard(m_board);
-				clonedBoard.movePiece(clonedBoard.getPieceAt(pos), target);
-
-				// recursive call
-				int score = simulate(clonedBoard, !m_isBlackTurn, depth + 1, maxDepth);
-				bestScore = isBlackTurn ? std::max(bestScore, score) : std::min(bestScore, score);
-			}
-		}
-	}
-
-	return bestScore;
-}
-
-
-
-
-std::vector<std::string> PossibleMoves::allPositionsOnBoard() const {
-
-	std::vector<std::string> positions;
-
-	for (char row = 'a'; row <= 'h'; ++row) {
-		for (char col = '1'; col <= '8'; ++col) {
-			positions.push_back(std::string{ row, col });
-		}
-	}
-	return positions;
-}
-
-
-
-const PriorityQueue<PossibleMovement>& PossibleMoves::getBestMoves() const {
-	return m_bestMoves;
-}
-*/

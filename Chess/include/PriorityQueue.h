@@ -1,7 +1,7 @@
 #pragma once
 
 #include <list>
-#include <ostream>
+#include <iostream>
 
 template <typename T>
 class PriorityQueue
@@ -39,6 +39,8 @@ struct MyComparator {
 
 template<typename T>
 void PriorityQueue<T>::push(const T& move) {
+
+	std::cout << "Pushing move: " << move << " with score: " << move.getScore() << std::endl;
 
 	MyComparator<T> cmp;
 	auto it = m_queue.begin();

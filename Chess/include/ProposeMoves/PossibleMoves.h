@@ -14,6 +14,8 @@ public:
     void findPossibleMoves(int numOfTurns);
     const PriorityQueue<PossibleMovement>& getBestMoves() const;
 
+	void printBestMoves() const;
+
 private:
     Board m_board;
     bool m_isBlackTurn;
