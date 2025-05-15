@@ -11,7 +11,8 @@ class GameController
 public:
 	GameController(const std::string& boardString, int wantedDepth);
 	MoveResult validateMovement(const std::string& response);
-	void recommendMoves();
+	PriorityQueue<PossibleMovement> recommendMoves();
+	std::string formatRecommendations(const PriorityQueue<PossibleMovement>& moves);
 
 
 private:

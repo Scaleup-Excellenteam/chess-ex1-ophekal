@@ -55,6 +55,9 @@ void PriorityQueue<T>::push(const T& move) {
 	if (m_queue.size() > 5) {
 		m_queue.pop_back();
 	}
+
+	std::cout << "__________________________________________________\n"<< std::endl;
+
 }
 
 
@@ -84,7 +87,10 @@ std::ostream& operator<<(std::ostream& os, const PriorityQueue<T>& pq) {
 
 	for (const auto& move : pq.getQueue()) {
 
-		os << i++ << ") " << move << std::endl;
+		if (i > 3) break;
+
+		os << i << ") " << move << std::endl;
+		++i;
 	}
 	
 	return os;

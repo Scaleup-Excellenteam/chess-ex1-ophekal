@@ -17,9 +17,10 @@ int main()
 
 	int codeResponse = 0;
 
-	controller.recommendMoves();
+	auto moves = controller.recommendMoves();
+	std::string formatted = controller.formatRecommendations(moves);
 
-	string res = a.getInput();
+	string res = a.getInput(formatted);
 	while (res != "exit")
 	{
 		/* 
@@ -37,14 +38,16 @@ int main()
 		*/
 		/**/ 
 		{ 
-			controller.recommendMoves();
 			MoveResult result = controller.validateMovement(res);
-			codeResponse = int(result);
+			codeResponse = int(result);			
 		}
 		/**/
 
+		auto moves = controller.recommendMoves();
+		std::string formatted = controller.formatRecommendations(moves);
+
 		a.setCodeResponse(codeResponse);
-		res = a.getInput(); 
+		res = a.getInput(formatted); 
 	}
 
 	cout << endl << "Exiting " << endl; 

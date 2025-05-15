@@ -6,6 +6,9 @@
 
 #include <string>
 
+#include "GameController.h"
+
+
 using std::cout;
 using std::cin; 
 using std::endl;
@@ -38,6 +41,6 @@ public:
 	Chess(const string& start = "RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr");
 	Chess(const Chess&)=delete;
 	Chess& operator=(const Chess&) = delete;
-	string getInput();
+	string getInput(const std::string& recommendedMoves);
 	void setCodeResponse(int codeResponse);
 };

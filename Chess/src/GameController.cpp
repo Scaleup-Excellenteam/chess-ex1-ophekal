@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <sstream>
 #include "GameController.h"
 #include "MoveResult.h"
 
@@ -11,7 +12,7 @@
  * @param boardString A linear board representation used to initialize the game.
  */
 GameController::GameController (const std::string& boardString, int wantedDepth)
-	: m_board(boardString), m_isBlackTurn(false), m_depth(wantedDepth), m_recommendMoves(boardString, m_movementValidator) {}
+	: m_board(boardString), m_isBlackTurn(false), m_depth(wantedDepth), m_recommendMoves(m_movementValidator) {}
 
 
 /**
@@ -183,11 +184,19 @@ bool GameController::IsIfOpponentPiecesThreatning(bool kingColor, std::string ta
 	return false;
 }
 
-void GameController::recommendMoves() {
+PriorityQueue<PossibleMovement> GameController::recommendMoves() {
 	
-	m_recommendMoves.findPossibleMoves(m_depth, m_isBlackTurn);
-	PriorityQueue<PossibleMovement> bestMoves = m_recommendMoves.getBestMoves();
+	m_recommendMoves.findPossibleMoves(m_depth, m_isBlackTurn, m_board);
+	return m_recommendMoves.getBestMoves();
+	//PriorityQueue<PossibleMovement> bestMoves = m_recommendMoves.getBestMoves();
 	
-	std::cout << bestMoves << std::endl;
+	//std::cout << bestMoves << std::endl;
 
+}
+
+std::string GameController::formatRecommendations(const PriorityQueue<PossibleMovement>& moves) {
+	
+	std::ostringstream out;
+	out << moves;
+	return out.str();
 }

@@ -18,13 +18,14 @@ const int CAPTURE_BONUS_MULTIPLIER = 10;
 
 
 
-PossibleMoves::PossibleMoves(const std::string& boardString, const MovementValidator& movementValidator)
-    : m_board(boardString), m_movementValidator(movementValidator) {
+PossibleMoves::PossibleMoves(const MovementValidator& movementValidator)
+    : m_movementValidator(movementValidator) {
 
-    std::cout << "PossibleMoves constructed with boardString: " << boardString << std::endl;
+    std::cout << "PossibleMoves constructed "<< std::endl;
 }
 
 int PossibleMoves::getPieceValue(const Piece* piece) const {
+    
     if (!piece) return 0;
     const std::string& name = piece->getName();
     if (name == "Pawn") return PAWN_VALUE;
@@ -83,9 +84,7 @@ int PossibleMoves::calculateMoveScore(Board& boardBefore, Board& boardAfter, con
     return score;
 }
 
-
-
-void PossibleMoves::findPossibleMoves(int depth, bool isBlack) {
+void PossibleMoves::findPossibleMoves(int depth, bool isBlack, const Board& board ) {
 
     std::cout << "[findPossibleMoves] Start - numOfTurns: " << depth << std::endl;
     std::cout << "===== STARTING NEW MOVE SEARCH =====" << std::endl;
@@ -102,7 +101,7 @@ void PossibleMoves::findPossibleMoves(int depth, bool isBlack) {
     m_isBlackTurn = isBlack;
 
 
-    for (const auto& [pos, piece] : m_board.getBoard()) {
+    for (const auto& [pos, piece] : board.getBoard()) {
         
         if (piece && piece->isBlack() == m_recommendForBlack) {
             
@@ -111,14 +110,14 @@ void PossibleMoves::findPossibleMoves(int depth, bool isBlack) {
 
                 if (target == pos) continue; // Skip if target is same as origin
 
-                auto targetPiece = m_board.getPieceAt(target);
+                auto targetPiece = board.getPieceAt(target);
                 if (targetPiece && (targetPiece->isBlack() == m_isBlackTurn)) continue;
 
                 // Check if the move is legal
-                if (!m_movementValidator.isMoveLegal(piece.get(), target, m_board.getBoard())) continue;
+                if (!m_movementValidator.isMoveLegal(piece.get(), target, board.getBoard())) continue;
 
                 // Create a copy of the board to simulate the move
-                Board clonedBoard(m_board);
+                Board clonedBoard(board);
                 Piece* clonedPiece = clonedBoard.getPieceAt(pos);
                 if (!clonedPiece) continue;
 
@@ -136,6 +135,12 @@ void PossibleMoves::findPossibleMoves(int depth, bool isBlack) {
 
                 // Total score for this move
                 int finalScore = immediateScore - opponentScore;
+                //int finalScore = immediateScore + opponentScore;
+
+                // Debug logging
+                std::cout << "Move " << pos << " -> " << target << " immediate score: " << immediateScore << std::endl;
+                std::cout << "Opponent's best response score: " << opponentScore << std::endl;
+                std::cout << "Final score after subtraction: " << finalScore << std::endl;
 
                 // Create movement object and add to priority queue
                 PossibleMovement movement;
@@ -212,7 +217,14 @@ int PossibleMoves::minMax(Board& board, bool isBlackTurn, int depth, int maxDept
             }
         }
     }
+
+    if (isBlackTurn != m_recommendForBlack) {
+        // If it's the opponent's turn, flip the sign of the best score
+        // to represent it from our perspective
+        bestScore = -bestScore;
+    }
     return bestScore;
+
 }
 
 
