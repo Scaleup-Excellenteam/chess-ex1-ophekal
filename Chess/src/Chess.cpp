@@ -292,7 +292,7 @@ string Chess::getInput(const std::string& recommendedMoves)
 
 	displayBoard();
 
-	std::cout << recommendedMoves << std::endl;
+	//std::cout << recommendedMoves << std::endl;
 
 	showAskInput();
 
@@ -307,7 +307,7 @@ string Chess::getInput(const std::string& recommendedMoves)
 			m_errorMsg = "The source and the destination are the same !! \n";
 		displayBoard();
 
-		std::cout << recommendedMoves << std::endl;
+		//std::cout << recommendedMoves << std::endl;
 
 		showAskInput();
 		cin >> m_input;

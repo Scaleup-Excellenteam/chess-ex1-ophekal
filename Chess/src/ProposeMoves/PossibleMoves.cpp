@@ -19,10 +19,8 @@ const int CAPTURE_BONUS_MULTIPLIER = 10;
 
 
 PossibleMoves::PossibleMoves(const MovementValidator& movementValidator)
-    : m_movementValidator(movementValidator) {
+    : m_movementValidator(movementValidator) {}
 
-    std::cout << "PossibleMoves constructed "<< std::endl;
-}
 
 int PossibleMoves::getPieceValue(const Piece* piece) const {
     
@@ -36,6 +34,7 @@ int PossibleMoves::getPieceValue(const Piece* piece) const {
     if (name == "King") return KING_VALUE;
     return 0;
 }
+
 
 int PossibleMoves::calculateMoveScore(Board& boardBefore, Board& boardAfter, const std::string& from, const std::string& to) {
     

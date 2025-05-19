@@ -10,7 +10,7 @@ int main()
 	Chess a(board);
 
 	int wantedDepth;
-	std::cout << "Enter the number of turns you want to take into consideration\n";
+	std::cout << "Please enter search depth (higher values give better moves but take longer): ";
 	std::cin >> wantedDepth;
 
 	GameController controller(board, wantedDepth);
