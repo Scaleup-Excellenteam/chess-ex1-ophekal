@@ -11,7 +11,8 @@ const int ROOK_VALUE = 500;
 const int QUEEN_VALUE = 900;
 const int KING_VALUE = 20000;
 
-const int THREATENED_BY_WEAKER_PENALTY = -200;
+const int THREATENED_BY_WEAKER_PENALTY = -100;
+const int THREATENED_BY_STRONGER_PENALTY = -200;
 const int THREATENS_STRONGER_BONUS = 150;
 const int CAPTURE_BONUS_MULTIPLIER = 10;
 
@@ -38,7 +39,7 @@ int PossibleMoves::getPieceValue(const Piece* piece) const {
 
 int PossibleMoves::calculateMoveScore(Board& boardBefore, Board& boardAfter, const std::string& from, const std::string& to) {
     
-//    std::cout << "[calculateMoveScore] From " << from << " To " << to << std::endl;
+    std::cout << "[calculateMoveScore] From " << from << " To " << to << std::endl;
     
     auto movedPiece = boardAfter.getPieceAt(to);
     if (!movedPiece) {
@@ -51,17 +52,36 @@ int PossibleMoves::calculateMoveScore(Board& boardBefore, Board& boardAfter, con
     if (capturedPiece && capturedPiece->isBlack() != movedPiece->isBlack()) {
         int captureValue = getPieceValue(capturedPiece);
         score += captureValue * CAPTURE_BONUS_MULTIPLIER;
-//        std::cout << "Captured piece at " << to << " worth " << captureValue << " -> score = " << score << std::endl;
+        std::cout << "Captured piece at " << to << " worth " << captureValue << " -> score = " << score << std::endl;
     }
 
-
-    for (const auto& [pos, enemyPiece] : boardAfter.getBoard()) {
+    /*
+    * for (const auto& [pos, enemyPiece] : boardAfter.getBoard()) {
         if (enemyPiece && enemyPiece->isBlack() != movedPiece->isBlack()) {
             if (m_movementValidator.isMoveLegal(enemyPiece.get(), to, boardAfter.getBoard())) {
                 if (getPieceValue(enemyPiece.get()) < getPieceValue(movedPiece)) {
                     score += THREATENED_BY_WEAKER_PENALTY;
-//                    std::cout << "Threatened by weaker piece at " << pos << std::endl;
+                    std::cout << "Threatened by weaker piece at " << pos << std::endl;
                 }
+            }
+        }
+    }
+    */
+    for (const auto& [pos, enemyPiece] : boardAfter.getBoard()) {
+        if (!enemyPiece || enemyPiece->isBlack() == movedPiece->isBlack()) continue;
+
+        // Check if this enemy piece can move to the new location of our moved piece
+        if (m_movementValidator.isMoveLegal(enemyPiece.get(), to, boardAfter.getBoard())) {
+            int threatValue = getPieceValue(enemyPiece.get());
+            int myValue = getPieceValue(movedPiece);
+
+            if (threatValue < myValue) {
+                score += THREATENED_BY_WEAKER_PENALTY;
+                std::cout << "Threatened by weaker piece at " << pos << std::endl;
+            }
+            else {
+                score += THREATENED_BY_STRONGER_PENALTY;
+                std::cout << "Threatened by stronger or equal piece at " << pos << std::endl;
             }
         }
     }
@@ -71,20 +91,20 @@ int PossibleMoves::calculateMoveScore(Board& boardBefore, Board& boardAfter, con
             if (m_movementValidator.isMoveLegal(movedPiece, pos, boardAfter.getBoard())) {
                 if (getPieceValue(targetPiece.get()) > getPieceValue(movedPiece)) {
                     score += THREATENS_STRONGER_BONUS;
-//                    std::cout << "Threatens stronger piece at " << pos << std::endl;
+                    std::cout << "Threatens stronger piece at " << pos << std::endl;
                 }
             }
         }
     }
 
-//    std::cout << "Final move score: " << score << std::endl;
+    std::cout << "Final move score: " << score << std::endl;
     return score;
 }
 
 
 void PossibleMoves::findPossibleMoves(int depth, bool isBlack, const Board& board ) {
 
-//    std::cout << "[findPossibleMoves] Start"<< std::endl;
+    std::cout << "[findPossibleMoves] Start"<< std::endl;
 
     // Clear previous best moves
     while (!m_bestMoves.getQueue().empty()) {
@@ -112,44 +132,54 @@ void PossibleMoves::findPossibleMoves(int depth, bool isBlack, const Board& boar
                 Board beforeBoard(clonedBoard);
                 clonedBoard.movePiece(clonedPiece, target);
                 
-                
-                // NEW PRINT for top-level move at depth 0
-//                std::cout << "[findPossibleMoves] Starting evaluation from " << pos
-//                    << " to " << target << '\n';
-                
-                int score = minMax(clonedBoard, !m_isBlackTurn, 0, depth);
+                // Calculate immediate score for this move
+                int immediateScore = calculateMoveScore(beforeBoard, clonedBoard, pos, target);
 
-//                std::cout << "Score for move " << pos << " -> " << target << " is " << score << ")\n";
+                
+                std::cout << "[findPossibleMoves] Immediate score for " << pos
+                    << " -> " << target << ": " << immediateScore << std::endl;
 
+                // Calculate future score through minMax algorithm
+                int futureScore = 0;
+                if (depth > 0) {
+                    futureScore = minMax(clonedBoard, !m_isBlackTurn, 1, depth);
+                    //futureScore = -futureScore;
+                    std::cout << "[findPossibleMoves] Future score from minMax: " << futureScore << std::endl;
+                }
+
+                
+               // int score = minMax(clonedBoard, !m_isBlackTurn, 0, depth);
+
+               // std::cout << "Score for move " << pos << " -> " << target << " is " << score << ")\n";
+
+                // Final score is immediate + future
+                int finalScore = immediateScore + futureScore;
+
+                std::cout << "[findPossibleMoves] Final score for " << pos
+                    << " -> " << target << ": " << finalScore << std::endl;
 
                 // Create movement object and add to priority queue
                 PossibleMovement movement;
                 movement.setFrom(pos);
                 movement.setDestination(target);
-                movement.setScore(score);
+                movement.setScore(finalScore);
                 m_bestMoves.push(movement);
             }
         }
     }
-    printBestMoves();
+    //printBestMoves();
 }
 
 
 
 int PossibleMoves::minMax(Board& board, bool isBlackTurn, int depth, int maxDepth) {
 
-  //  std::string indent(depth * 2, ' ');
-  //  std::cout << indent << "[minMax] Depth: " << depth
-  //      << (depth == 0 ? " (Top Level)" : "")
-  //      << " | Player: " << (isBlackTurn ? "Black" : "White")
-  //      << " | Evaluating moves...\n";
-
-
-    if (depth == maxDepth) {
+    if (depth > maxDepth) {
         return 0;
     }
 
     int bestScore = (isBlackTurn == m_recommendForBlack) ? INT_MIN : INT_MAX;
+    //int bestScore = INT_MIN;
 
 
     for (const auto& [pos, piece] : board.getBoard()) {
@@ -171,42 +201,56 @@ int PossibleMoves::minMax(Board& board, bool isBlackTurn, int depth, int maxDept
                 clonedBoard.movePiece(clonedPiece, target);
 
                 int score;
-                if (depth + 1 == maxDepth) {
+                if (depth == maxDepth) {
+                    
                     score = calculateMoveScore(beforeBoard, clonedBoard, pos, target);
 
-                    // Convert score to be from root player's perspective:
+                    // Only negate if it's not the root player's turn
                     if (isBlackTurn != m_recommendForBlack) {
                         score = -score;
                     }
+                    
+                    std::cout << "[minMax] Depth " << depth << " move " << pos << " -> " << target
+                        << " evaluated with score " << score << std::endl;
 
-          //          std::cout << indent << "Evaluated move " << pos << " -> " << target
-          //              << " | Score: " << score << '\n';
+                    // Convert score to be from root player's perspective:
+                   // if (isBlackTurn != m_recommendForBlack) {
+                      //  score = -score;
+                  //  }
 
                 }
                 else {
                     score = minMax(clonedBoard, !isBlackTurn, depth + 1, maxDepth);
                 }
 
-
+                /*
+                *      if (isBlackTurn == m_recommendForBlack) {
+                    bestScore = std::max(bestScore, score);
+                }
+                else {
+                    bestScore = std::min(bestScore, score);
+                }            
+                */
                 if (isBlackTurn == m_recommendForBlack) {
                     bestScore = std::max(bestScore, score);
                 }
                 else {
                     bestScore = std::min(bestScore, score);
                 }
+                
+              //  if (isBlackTurn != m_recommendForBlack) {
+              //      score = -score;
+              //  }
+
+                bestScore = std::max(bestScore, score);
+
             }
         }
     }
 
-    if (bestScore == INT_MIN || bestScore == INT_MAX) {
-        return 0;
-    }
-
-    //std::cout << indent << "Best score at depth " << depth << ": " << bestScore << '\n';
-    return bestScore;
+    return (bestScore == INT_MIN || bestScore == INT_MAX) ? 0 : bestScore;
 
 }
-
 
 
 std::vector<std::string> PossibleMoves::allPositionsOnBoard() const {

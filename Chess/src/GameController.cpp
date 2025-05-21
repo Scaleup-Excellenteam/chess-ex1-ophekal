@@ -148,6 +148,9 @@ bool GameController::doesMoveCauseSelfCheck(Piece* piece, const std::string& fro
  * @param kingColor True for black king, false for white king.
  * @return True if the king is in check; otherwise, false.
  */
+
+/*
+
 bool GameController::isKingInCheck(bool kingColor) const {
 	
 	std::string kingPosition = m_board.findKingPosition(kingColor);
@@ -162,6 +165,28 @@ bool GameController::isKingInCheck(bool kingColor) const {
 }
 
 
+*/
+
+bool GameController::isKingInCheck(bool kingColor) const {
+	
+	std::string kingPosition = m_board.findKingPosition(kingColor);
+	return m_movementValidator.isKingInCheck(kingColor, kingPosition, m_board.getBoard());
+	
+	/*
+		// null - no king exists in this color
+
+		if (kingPosition == "") {
+		std::cout << "no king in this color" << std::endl;
+		return false;
+	}
+
+	return IsIfOpponentPiecesThreatning(kingColor, kingPosition);
+	
+	*/
+
+}
+
+
 /**
  * Checks whether any opposing pieces are threatening a given position.
  *
@@ -169,6 +194,8 @@ bool GameController::isKingInCheck(bool kingColor) const {
  * @param targetPosition The position to check.
  * @return True if any opponent pieces threaten the king if piece is moved to targetPosition, false otherwise.
  */
+/*
+
 bool GameController::IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) const {
 
 	for (const auto& [position, piece] : m_board.getBoard()) {
@@ -183,6 +210,9 @@ bool GameController::IsIfOpponentPiecesThreatning(bool kingColor, std::string ta
 	}
 	return false;
 }
+
+
+*/
 
 PriorityQueue<PossibleMovement> GameController::recommendMoves() {
 	

@@ -1,4 +1,5 @@
 #include "MovementValidator.h"
+#include <iostream>
 
 
 
@@ -197,4 +198,44 @@ bool MovementValidator::isPawnMoveLegal(const Piece* piece, const std::string& t
     // if got here means the movement is one square forward and is valid
     return true;
 
+}
+
+
+/**
+ * Determines whether the specified player's king is under threat.
+ *
+ * @param kingColor True for black king, false for white king.
+ * @return True if the king is in check; otherwise, false.
+ */
+bool MovementValidator::isKingInCheck(bool kingColor, std::string kingPosition, const BoardMap& board) const {
+    
+    // null - no king exists in this color
+    if (kingPosition == "") {
+        std::cout << "no king in this color" << std::endl;
+        return false;
+    }
+
+    return IsIfOpponentPiecesThreatning(kingColor, kingPosition, board);
+}
+
+/**
+ * Checks whether any opposing pieces are threatening a given position.
+ *
+ * @param kingColor The color of the king being threatened (true = black, false = white).
+ * @param targetPosition The position to check.
+ * @return True if any opponent pieces threaten the king if piece is moved to targetPosition, false otherwise.
+ */
+bool MovementValidator::IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition, const BoardMap& board) const {
+
+    for (const auto& [position, piece] : board) {
+
+        if (piece && piece->isBlack() != kingColor) {
+            if (piece->isDirectionValid(targetPosition)) {
+                if (isMoveLegal(piece.get(), targetPosition, board)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }

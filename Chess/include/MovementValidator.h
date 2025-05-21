@@ -10,11 +10,15 @@ public:
 
     MovementValidator() = default;
     bool isMoveLegal(const Piece* piece, const std::string& targetPosition, const BoardMap& board) const;
+    bool isKingInCheck(bool kingColor, std::string kingPosition, const BoardMap& board) const;
+
 
 private:
     bool isPathClear(const Piece* piece, const std::string& targetPosition, const BoardMap& board) const;
     bool isStraightPathClear(int startRow, int startCol, int endRow, int endCol, const BoardMap& board) const;
     bool isDiagonalPathClear(int startRow, int startCol, int endRow, int endCol, const BoardMap& board) const;
     bool isPawnMoveLegal(const Piece* piece, const std::string& targetPosition, const BoardMap& board) const;
+    bool IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition, const BoardMap& board) const;
     std::string coordsToPosition(int row, int col) const;
+
 };

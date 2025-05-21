@@ -22,7 +22,7 @@ private:
 	int m_depth;
 	PossibleMoves m_recommendMoves;
 	
-	bool IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) const;
+	//bool IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) const;
 	void updateIsBlackTurn(bool isBlackTurn);
 	bool isCurrentPlayerBlack () const;
 	bool isKingInCheck(bool isBlack) const;
