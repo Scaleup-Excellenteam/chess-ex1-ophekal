@@ -1,5 +1,6 @@
 #include "Board/Board.h"
 #include "MovementValidator.h"
+#include "Exceptions/StringFormatException.h"
 #include <cctype>
 #include <iostream>
 #include <memory>
@@ -13,6 +14,11 @@
  */
 Board::Board(const std::string& boardString) {
 	
+	// Check if string is the right length (64 squares)
+	if (boardString.length() != 64) {
+		throw StringFormatException("Expected 64 characters, got " + std::to_string(boardString.length()));
+	}
+
 	for (size_t i = 0; i < boardString.size(); ++i)
 	{
 		char symbol = boardString[i];

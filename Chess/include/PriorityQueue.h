@@ -2,6 +2,7 @@
 
 #include <list>
 #include <iostream>
+#include "Exceptions/EmptyQueueException.h"
 
 template <typename T>
 class PriorityQueue
@@ -11,6 +12,7 @@ public:
 	void push(const T& move);	// o(n) max complexity
 	const T poll();				// o(1) complexity
 	const std::list<T>& getQueue() const;
+	bool isEmpty() const;
 
 private:
 	std::list<T> m_queue;
@@ -63,10 +65,16 @@ void PriorityQueue<T>::push(const T& move) {
 
 template<typename T>
 const T PriorityQueue<T>::poll() {
+	
+	if (m_queue.empty()) {
+		throw EmptyQueueException();
+	}
+
 	T bestMove = m_queue.front();
 	m_queue.pop_front();
 	return bestMove;
 }
+
 
 template<typename T>
 const std::list<T>& PriorityQueue<T>::getQueue() const
@@ -74,6 +82,11 @@ const std::list<T>& PriorityQueue<T>::getQueue() const
 	return m_queue;
 }
 
+
+template<typename T>
+bool PriorityQueue<T>::isEmpty() const {
+	return m_queue.empty();
+}
 
 //-----------------------------------------------------------------------------
 // Global operators (declarations)
