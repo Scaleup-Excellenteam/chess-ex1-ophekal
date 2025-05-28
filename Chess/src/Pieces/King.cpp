@@ -28,6 +28,16 @@ King::King(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "King") {}
 
 
+/**
+ * Creates a deep copy of the King piece.
+ *
+ * @return A unique pointer to a new King instance with the same properties.
+ */
+std::unique_ptr<Piece> King::clone() const
+{
+	return std::make_unique<King>(*this);
+}
+
 
 /**
  * Checks if the direction from the current position to the target position is valid for a King.

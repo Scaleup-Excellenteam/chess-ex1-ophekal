@@ -29,6 +29,17 @@ Knight::Knight(const std::string& position, bool isBlack)
 
 
 /**
+ * Creates a deep copy of the knight piece.
+ *
+ * @return A unique pointer to a new Knight instance with the same properties.
+ */
+std::unique_ptr<Piece> Knight::clone() const
+{
+	return std::make_unique<Knight>(*this);
+}
+
+
+/**
  * Checks if the direction from the current position to the target position is valid for a Knight.
  * The logic for a Knight’s movement is not implemented in this method.
  * 
@@ -39,5 +50,10 @@ Knight::Knight(const std::string& position, bool isBlack)
  */
 bool Knight::isDirectionValid(const std::string& targetPosition) const
 {
-	return false;
+	auto [currentRow, currentCol] = positionToCoords(m_position);
+	auto [targetRow, targetCol] = positionToCoords(targetPosition);
+
+	return ((std::abs(currentRow - targetRow) == 2 && std::abs(currentCol - targetCol) == 1) ||
+		    (std::abs(currentRow - targetRow) == 1 && std::abs(currentCol - targetCol) == 2));
+
 }

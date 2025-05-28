@@ -29,6 +29,17 @@ Bishop::Bishop(const std::string& position, bool isBlack)
 
 
 /**
+ * Creates a deep copy of the Bishop piece.
+ *
+ * @return A unique pointer to a new Bishop instance with the same properties.
+ */
+std::unique_ptr<Piece> Bishop::clone() const
+{
+	return std::make_unique<Bishop>(*this);
+}
+
+
+/**
  * Checks if the direction from the current position to the target position is valid for a Bishop.
  * A Bishop moves diagonally, so the difference in rows and columns must be equal.
  *

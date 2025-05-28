@@ -1,5 +1,6 @@
-#include "BoardManager.h"
+#include "Board/Board.h"
 #include "MovementValidator.h"
+#include "Exceptions/StringFormatException.h"
 #include <cctype>
 #include <iostream>
 #include <memory>
@@ -11,7 +12,12 @@
  *
  * @param boardString A linear string representation of the board (e.g., "rnbqkbnrpp...").
  */
-BoardManager::BoardManager(const std::string& boardString){
+Board::Board(const std::string& boardString) {
+	
+	// Check if string is the right length (64 squares)
+	if (boardString.length() != 64) {
+		throw StringFormatException("Expected 64 characters, got " + std::to_string(boardString.length()));
+	}
 
 	for (size_t i = 0; i < boardString.size(); ++i)
 	{
@@ -29,13 +35,29 @@ BoardManager::BoardManager(const std::string& boardString){
 }
 
 
+/**
+ * Copy constructor that creates a deep copy of another board.
+ *
+ * @param other The board to copy from.
+ */
+Board::Board(const Board& other){
+
+	for (const auto& [pos, piece] : other.m_board) {
+		if (piece) {
+			m_board[pos] = piece->clone();
+		}
+	}
+}
+	
+
+
  /**
   * Converts a character to the corresponding piece name.
   *
   * @param symbol A character representing the piece.
   * @return A string representing the piece type.
   */
- std::string BoardManager::charToPieceName(char symbol) const {
+ std::string Board::charToPieceName(char symbol) const {
 
 	switch (std::tolower(symbol))
 	{
@@ -56,7 +78,7 @@ BoardManager::BoardManager(const std::string& boardString){
   * @param index The index in the board string.
   * @return A string representing the position in algebraic notation.
   */
- std::string BoardManager::indexToPosition(int index) const {
+ std::string Board::indexToPosition(int index) const {
 
 	char row = 'a' + index / 8;
 	char col = '1' + index % 8;
@@ -70,7 +92,7 @@ BoardManager::BoardManager(const std::string& boardString){
   * @param position The position to check.
   * @return A raw pointer to the piece at that position, or nullptr if empty.
   */
- Piece* BoardManager::getPieceAt(const std::string& position) const {
+ Piece* Board::getPieceAt(const std::string& position) const {
 
 	auto it = m_board.find(position);
 	if (it == m_board.end()) {
@@ -86,8 +108,7 @@ BoardManager::BoardManager(const std::string& boardString){
   * @param isBlack True if searching for the black king, false for white.
   * @return The position of the king, or an empty string if not found.
   */
- std::string BoardManager::findKingPosition(bool isBlack) const
-{
+ std::string Board::findKingPosition(bool isBlack) const {
 	for (const auto& [position, piece] : m_board)
 	{
 		if (piece && piece->getName() == "King" && piece->isBlack() == isBlack)
@@ -101,30 +122,6 @@ BoardManager::BoardManager(const std::string& boardString){
 }
 
 
- /**
-  * Checks whether any opposing pieces are threatening a given position.
-  *
-  * @param kingColor The color of the king being threatened (true = black, false = white).
-  * @param targetPosition The position to check.
-  * @return True if any opponent pieces threaten the king if piece is moved to targetPosition, false otherwise.
-  */
- bool BoardManager::IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) const {
-
-	MovementValidator validator;
-
-	for (const auto& [position, piece] : m_board) {
-
-		if (piece && piece->isBlack() != kingColor) {
-			if (piece->isDirectionValid(targetPosition)) {
-				if (validator.isMoveLegal(piece.get(), targetPosition, m_board)) {
-					return true;
-				}
-			}
-		}
-	}
-	return false;
-}
-
 
  /**
   * Moves a piece from its current position to the specified destination.
@@ -132,7 +129,7 @@ BoardManager::BoardManager(const std::string& boardString){
   * @param piece Pointer to the piece to be moved.
   * @param to The destination position.
   */
- void BoardManager::movePiece(Piece* piece, const std::string& to) {
+ void Board::movePiece(Piece* piece, const std::string& to) {
 
 	std::string from = piece->getPosition();
 	m_board[to] = std::move(m_board[from]);
@@ -148,9 +145,9 @@ BoardManager::BoardManager(const std::string& boardString){
   * @param position The position to remove the piece from.
   * @return A raw pointer to the removed piece, or nullptr if no piece was present.
   */
- Piece* BoardManager::removePieceAt(const std::string& position)
-{
-	auto it = m_board.find(position);
+ Piece* Board::removePieceAt(const std::string& position) {
+	
+	 auto it = m_board.find(position);
 	if (it != m_board.end()) {
 		Piece* rawPointer = it->second.release();
 		m_board.erase(it);
@@ -166,8 +163,9 @@ BoardManager::BoardManager(const std::string& boardString){
   * @param piece Pointer to the piece to place.
   * @param position The position to place the piece at.
   */
- void BoardManager::placePiece(Piece* piece, const std::string& position){
-	if (piece) {
+ void Board::placePiece(Piece* piece, const std::string& position){
+	
+	 if (piece) {
 		piece->move(position);
 		m_board[position] = std::unique_ptr<Piece>(piece);
 	}
@@ -179,6 +177,6 @@ BoardManager::BoardManager(const std::string& boardString){
  *
  * @return A constant reference to the board map.
  */
- const std::unordered_map<std::string, std::unique_ptr<Piece>>& BoardManager::getBoard() const {
+ const std::unordered_map<std::string, std::unique_ptr<Piece>>& Board::getBoard() const {
 	return m_board;
 }

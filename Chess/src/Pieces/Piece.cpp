@@ -37,7 +37,17 @@ std::pair<int, int> Piece::positionToCoords(const std::string& position) const {
 }
 
 
-// Getters
+/**
+ * Checks whether the piece is black.
+ *
+ * @return true if the piece is black, false if it is white.
+ */
+bool Piece::isBlack() const {
+	return m_isBlack;
+}
+
+
+// ------------------------ Getters -----------------------------------------
 
 /**
  * Gets the name of the piece.
@@ -56,14 +66,4 @@ std::string Piece::getName() const {
  */
 std::string Piece::getPosition() const {
 	return m_position;
-}
-
-
-/**
- * Checks whether the piece is black.
- *
- * @return true if the piece is black, false if it is white.
- */
-bool Piece::isBlack() const {
-	return m_isBlack;
 }

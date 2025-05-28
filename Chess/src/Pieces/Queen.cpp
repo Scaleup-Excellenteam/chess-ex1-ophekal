@@ -28,6 +28,18 @@ Queen::Queen(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Queen") {}
 
 
+
+/**
+ * Creates a deep copy of the Queen piece.
+ *
+ * @return A unique pointer to a new Queen instance with the same properties.
+ */
+std::unique_ptr<Piece> Queen::clone() const
+{
+	return std::make_unique<Queen>(*this);
+}
+
+
 /**
  * Checks if the direction from the current position to the target position is valid for a Queen.
  * A Queen can move diagonally, vertically, or horizontally.

@@ -1,21 +1,27 @@
 #pragma once
 
 #include <string>
-#include "BoardManager.h"
+#include "Board/Board.h"
 #include "MoveResult.h"
 #include "MovementValidator.h"
+#include "ProposeMoves/PossibleMoves.h"
 
 class GameController
 {
 public:
-	GameController(const std::string& boardString);
+	GameController(const std::string& boardString, int wantedDepth);
 	MoveResult validateMovement(const std::string& response);
+	PriorityQueue<PossibleMovement> recommendMoves();
+	std::string formatRecommendations(const PriorityQueue<PossibleMovement>& moves);
+
 
 private:
-	BoardManager m_boardManager;
+	Board m_board;
 	bool m_isBlackTurn;
 	MovementValidator m_movementValidator;
-
+	int m_depth;
+	PossibleMoves m_recommendMoves;
+	
 	void updateIsBlackTurn(bool isBlackTurn);
 	bool isCurrentPlayerBlack () const;
 	bool isKingInCheck(bool isBlack) const;

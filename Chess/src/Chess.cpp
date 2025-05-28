@@ -281,7 +281,7 @@ Chess::Chess(const string& start)
 }
 
 // get the source and destination 
-string Chess::getInput()
+string Chess::getInput(const std::string& recommendedMoves)
 {
 	static bool isFirst = true;
 
@@ -291,6 +291,9 @@ string Chess::getInput()
 		doTurn(); 
 
 	displayBoard();
+
+	std::cout << recommendedMoves << std::endl;
+
 	showAskInput();
 
 	cin >> m_input;
@@ -303,6 +306,9 @@ string Chess::getInput()
 		else
 			m_errorMsg = "The source and the destination are the same !! \n";
 		displayBoard();
+
+		std::cout << recommendedMoves << std::endl;
+
 		showAskInput();
 		cin >> m_input;
 		if (isExit())

@@ -29,6 +29,17 @@ Rook::Rook(const std::string& position, bool isBlack)
 
 
 /**
+ * Creates a deep copy of the Rook piece.
+ *
+ * @return A unique pointer to a new Rook instance with the same properties.
+ */
+std::unique_ptr<Piece> Rook::clone() const
+{
+	return std::make_unique<Rook>(*this);
+}
+
+
+/**
  * Checks if the direction from the current position to the target position is valid for a Rook.
  * A Rook can move either horizontally or vertically any number of squares.
  *

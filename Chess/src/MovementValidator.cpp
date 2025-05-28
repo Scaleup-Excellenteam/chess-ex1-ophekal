@@ -1,4 +1,5 @@
 #include "MovementValidator.h"
+#include <iostream>
 
 
 
@@ -18,8 +19,18 @@ bool MovementValidator::isMoveLegal(const Piece* piece, const std::string& targe
         return false;
     }
 
-    return isPathClear(piece, targetPosition, board);
-};
+    // special handeling for pawn
+    if (piece->getName() == "Pawn") {
+        return isPawnMoveLegal(piece, targetPosition, board);
+    }
+    else if (piece->getName() == "Knight") {
+        // Knights can jump over pieces; only direction matters
+        return true;
+    }
+    else {
+        return isPathClear(piece, targetPosition, board);
+    }
+}
 
 
 /**
@@ -139,4 +150,92 @@ std::string MovementValidator::coordsToPosition(int row, int col) const {
     char rowChar = 'a' + row;
     char colChar = '1' + col;
     return std::string(1, rowChar) + std::string(1, colChar);
+}
+
+
+bool MovementValidator::isPawnMoveLegal(const Piece* piece, const std::string& targetPosition, const BoardMap& board) const {
+
+    auto [startRow, startCol] = piece->positionToCoords(piece->getPosition());
+    auto [endRow, endCol] = piece->positionToCoords(targetPosition);
+
+    // check if the movement is diagonal
+    if (startCol != endCol) {
+        
+        // check if there's an opponents piece in target position
+        auto it = board.find(targetPosition);
+        if (it == board.end()) {
+            return false;
+        }
+
+        Piece* targetPiece = it->second.get();
+        if (targetPiece->isBlack() == piece->isBlack()) {
+            return false;
+        }
+
+        // means the target piece is the opponenets, valid movement
+        return true;
+    }
+
+    // check foward movement
+    // target must be empty in order to allow movement
+    if (board.find(targetPosition) != board.end()) {
+        return false;
+    }
+
+    // If it's a two-square move, all square must be empty
+    int forwardDirection = piece->isBlack() ? -1 : 1;
+
+    if (std::abs(endRow - startRow) == 2) {
+        int intermediateRow = startRow + forwardDirection;
+        std::string intermediatePos = coordsToPosition(intermediateRow, startCol);
+
+        // if there's a piece in the path, not valid
+        if (board.find(intermediatePos) != board.end()) {
+            return false;
+        }
+    }
+
+    // if got here means the movement is one square forward and is valid
+    return true;
+
+}
+
+
+/**
+ * Determines whether the specified player's king is under threat.
+ *
+ * @param kingColor True for black king, false for white king.
+ * @return True if the king is in check; otherwise, false.
+ */
+bool MovementValidator::isKingInCheck(bool kingColor, std::string kingPosition, const BoardMap& board) const {
+    
+    // null - no king exists in this color
+    if (kingPosition == "") {
+        std::cout << "no king in this color" << std::endl;
+        return false;
+    }
+
+    return IsIfOpponentPiecesThreatning(kingColor, kingPosition, board);
+}
+
+/**
+ * Checks whether any opposing pieces are threatening a given position.
+ *
+ * @param kingColor The color of the king being threatened (true = black, false = white).
+ * @param targetPosition The position to check.
+ * @return True if any opponent pieces threaten the king if piece is moved to targetPosition, false otherwise.
+ */
+bool MovementValidator::IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition, const BoardMap& board) const {
+
+    for (const auto& [position, piece] : board) {
+
+        if (piece && piece->isBlack() != kingColor) {
+            if (piece->isDirectionValid(targetPosition)) {
+                if (isMoveLegal(piece.get(), targetPosition, board)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }

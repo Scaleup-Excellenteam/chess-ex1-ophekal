@@ -5,6 +5,7 @@ class Bishop : public Piece
 {
 public:
 	Bishop(const std::string& position, bool isBlack);
+	std::unique_ptr<Piece> clone() const override;
 	bool isDirectionValid (const std::string& targetPosition) const override;
 
 private:

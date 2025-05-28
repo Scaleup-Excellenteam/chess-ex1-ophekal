@@ -29,6 +29,17 @@ Pawn::Pawn(const std::string& position, bool isBlack)
 
 
 /**
+ * Creates a deep copy of the Pawn piece.
+ *
+ * @return A unique pointer to a new Pawn instance with the same properties.
+ */
+std::unique_ptr<Piece> Pawn::clone() const
+{
+	return std::make_unique<Pawn>(*this);
+}
+
+
+/**
  * Checks if the direction from the current position to the target position is valid for a Pawn.
  * The logic for a Pawn’s movement is not yet implemented in this method.
  *
@@ -39,6 +50,35 @@ Pawn::Pawn(const std::string& position, bool isBlack)
  */
 bool Pawn::isDirectionValid(const std::string& targetPosition) const
 {
+	auto [currentRow, currentCol] = positionToCoords(m_position);
+	auto [targetRow, targetCol] = positionToCoords(targetPosition);
+	
+	// Direction depends on pawn color, white pawns move "up", black pawns move "down"
+	int forwardDirection = m_isBlack ? -1 : 1;
+
+	// Check if moving forward
+	if (currentCol == targetCol) {
+
+		if (targetRow - currentRow == forwardDirection) {
+			return true;
+		}
+	
+		// Check if pawn is in its initial row
+		// Black pawns start in row G (index 6), White pawns start in row B (index 1)
+		bool isInStartingRow = m_isBlack ? (currentRow == 6) : (currentRow == 1);
+	
+		if (isInStartingRow && targetRow - currentRow == 2 * forwardDirection) {
+			return true;
+		}
+
+		return false;
+	}
+
+	// Check for diagonal capture (one square diagonally forward)
+	if (std::abs(targetCol - currentCol) == 1 && (targetRow - currentRow) == forwardDirection) {
+		return true;
+	}
+
 	return false;
 }
 

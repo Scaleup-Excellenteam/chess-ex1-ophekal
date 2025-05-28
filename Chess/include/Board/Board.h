@@ -5,17 +5,17 @@
 #include <memory>
 #include "Factory/PieceFactory.h"
 
-class BoardManager
+class Board
 {
 public:
-	BoardManager(const std::string& boardString);
-	virtual ~BoardManager() = default;
+	Board(const std::string& boardString);
+	Board(const Board& other);
+
 	Piece* getPieceAt(const std::string& position) const;
-	std::string findKingPosition(bool isBlack) const;
-	void movePiece(Piece* from, const std::string& to);
 	Piece* removePieceAt(const std::string& position);
 	void placePiece(Piece* piece, const std::string& position);
-	bool IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) const;
+	void movePiece(Piece* from, const std::string& to);
+	std::string findKingPosition(bool isBlack) const;
 	const std::unordered_map<std::string, std::unique_ptr<Piece>>& getBoard() const;
 
 private:
