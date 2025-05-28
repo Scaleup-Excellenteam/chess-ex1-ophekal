@@ -28,16 +28,14 @@ Knight::Knight(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Knight") {}
 
 
-/*
-*/
+/**
+ * Creates a deep copy of the knight piece.
+ *
+ * @return A unique pointer to a new Knight instance with the same properties.
+ */
 std::unique_ptr<Piece> Knight::clone() const
 {
 	return std::make_unique<Knight>(*this);
-}
-
-int Knight::getValue() const
-{
-	return 3;
 }
 
 

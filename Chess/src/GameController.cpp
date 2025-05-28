@@ -143,87 +143,36 @@ bool GameController::doesMoveCauseSelfCheck(Piece* piece, const std::string& fro
 
 
 /**
- * Determines whether the specified player's king is under threat.
+ * Checks if the specified king is currently in check.
  *
- * @param kingColor True for black king, false for white king.
+ * @param kingColor True if checking the black king, false for white king.
  * @return True if the king is in check; otherwise, false.
  */
-
-/*
-
-bool GameController::isKingInCheck(bool kingColor) const {
-	
-	std::string kingPosition = m_board.findKingPosition(kingColor);
-	
-	// null - no king exists in this color
-	if (kingPosition == "") {
-		std::cout << "no king in this color" << std::endl;
-		return false;
-	}
-
-	return IsIfOpponentPiecesThreatning(kingColor, kingPosition);
-}
-
-
-*/
-
 bool GameController::isKingInCheck(bool kingColor) const {
 	
 	std::string kingPosition = m_board.findKingPosition(kingColor);
 	return m_movementValidator.isKingInCheck(kingColor, kingPosition, m_board.getBoard());
-	
-	/*
-		// null - no king exists in this color
-
-		if (kingPosition == "") {
-		std::cout << "no king in this color" << std::endl;
-		return false;
-	}
-
-	return IsIfOpponentPiecesThreatning(kingColor, kingPosition);
-	
-	*/
-
 }
 
 
 /**
- * Checks whether any opposing pieces are threatening a given position.
+ * Generates and returns recommended moves for the current player.
  *
- * @param kingColor The color of the king being threatened (true = black, false = white).
- * @param targetPosition The position to check.
- * @return True if any opponent pieces threaten the king if piece is moved to targetPosition, false otherwise.
+ * @return A priority queue containing the best possible moves.
  */
-/*
-
-bool GameController::IsIfOpponentPiecesThreatning(bool kingColor, std::string targetPosition) const {
-
-	for (const auto& [position, piece] : m_board.getBoard()) {
-
-		if (piece && piece->isBlack() != kingColor) {
-			if (piece->isDirectionValid(targetPosition)) {
-				if (m_movementValidator.isMoveLegal(piece.get(), targetPosition, m_board.getBoard())) {
-					return true;
-				}
-			}
-		}
-	}
-	return false;
-}
-
-
-*/
-
 PriorityQueue<PossibleMovement> GameController::recommendMoves() {
 	
 	m_recommendMoves.findPossibleMoves(m_depth, m_isBlackTurn, m_board);
 	return m_recommendMoves.getBestMoves();
-	//PriorityQueue<PossibleMovement> bestMoves = m_recommendMoves.getBestMoves();
-	
-	//std::cout << bestMoves << std::endl;
-
 }
 
+
+/**
+ * Formats the recommended moves into a readable string format.
+ *
+ * @param moves The priority queue of moves to format.
+ * @return A formatted string representation of the moves.
+ */
 std::string GameController::formatRecommendations(const PriorityQueue<PossibleMovement>& moves) {
 	
 	std::ostringstream out;

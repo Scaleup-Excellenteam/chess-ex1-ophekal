@@ -28,16 +28,14 @@ Rook::Rook(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Rook") {}
 
 
-/*
-*/
+/**
+ * Creates a deep copy of the Rook piece.
+ *
+ * @return A unique pointer to a new Rook instance with the same properties.
+ */
 std::unique_ptr<Piece> Rook::clone() const
 {
 	return std::make_unique<Rook>(*this);
-}
-
-int Rook::getValue() const
-{
-	return 5;
 }
 
 

@@ -35,9 +35,11 @@ Board::Board(const std::string& boardString) {
 }
 
 
-/*
-* copy ctor
-*/
+/**
+ * Copy constructor that creates a deep copy of another board.
+ *
+ * @param other The board to copy from.
+ */
 Board::Board(const Board& other){
 
 	for (const auto& [pos, piece] : other.m_board) {

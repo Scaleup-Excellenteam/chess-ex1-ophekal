@@ -4,13 +4,21 @@
 #include <iostream>
 #include "Exceptions/EmptyQueueException.h"
 
+
+/**
+ * A priority queue implementation that maintains elements in sorted order.
+ * Keeps only the top 5 elements to optimize performance.
+ *
+ * @tparam T The type of elements stored in the queue.
+ */
+
 template <typename T>
 class PriorityQueue
 {
 public:
 	PriorityQueue() = default;
 	void push(const T& move);	// o(n) max complexity
-	const T poll();				// o(1) complexity
+	void poll();				// o(1) complexity
 	const std::list<T>& getQueue() const;
 	bool isEmpty() const;
 
@@ -19,16 +27,30 @@ private:
 
 };
 
-// This struct will be used when entering moves into our priority queue- in order to find the location of the move.
-// This means that there'll be a loop that'll call this function with each member in the queue (or up to where already smaller)
-// and will find the right place to insert it! meaning the push func will call it!
+
 
 //-----------------------------------------------------------------------------
-// Comparator struct
+/*
+Comparator struct
+
+Comparator struct used to determine insertion order in the priority queue.
+Uses the > operator to compare elements, maintaining descending order.
+
+@tparam T The type of elements to compare.
+*/ 
+
 //-----------------------------------------------------------------------------
+
 template <typename T>
 struct MyComparator {
 
+	/**
+	 * Compares two elements to determine their relative priority.
+	 *
+	 * @param move1 The first element to compare.
+	 * @param move2 The second element to compare.
+	 * @return True if move1 has higher priority than move2.
+	 */
 	bool operator()(const T& move1, const T& move2) const {
 		return move1 > move2;	
 	}
@@ -39,10 +61,13 @@ struct MyComparator {
 // Function definitions
 //-----------------------------------------------------------------------------
 
+/**
+* Inserts an element into the queue in sorted order.
+*
+* @param move The element to insert.
+*/
 template<typename T>
 void PriorityQueue<T>::push(const T& move) {
-
-	std::cout << "Pushing move: " << move << " with score: " << move.getScore() << std::endl;
 
 	MyComparator<T> cmp;
 	auto it = m_queue.begin();
@@ -57,25 +82,29 @@ void PriorityQueue<T>::push(const T& move) {
 	if (m_queue.size() > 5) {
 		m_queue.pop_back();
 	}
-
-	std::cout << "__________________________________________________\n"<< std::endl;
-
 }
 
 
+/**
+ * Removes the highest priority element from the queue.
+ *
+ * @throws EmptyQueueException If the queue is empty.
+ */
 template<typename T>
-const T PriorityQueue<T>::poll() {
+void PriorityQueue<T>::poll() {
 	
 	if (m_queue.empty()) {
 		throw EmptyQueueException();
 	}
-
-	T bestMove = m_queue.front();
 	m_queue.pop_front();
-	return bestMove;
 }
 
 
+/**
+ * Returns a constant reference to the underlying queue.
+ *
+ * @return A constant reference to the list containing all elements.
+ */
 template<typename T>
 const std::list<T>& PriorityQueue<T>::getQueue() const
 {
@@ -83,14 +112,28 @@ const std::list<T>& PriorityQueue<T>::getQueue() const
 }
 
 
+/**
+ * Checks if the queue is empty.
+ *
+ * @return True if the queue is empty, false otherwise.
+ */
 template<typename T>
 bool PriorityQueue<T>::isEmpty() const {
 	return m_queue.empty();
 }
 
+
 //-----------------------------------------------------------------------------
-// Global operators (declarations)
+// Global operators
 //-----------------------------------------------------------------------------
+/**
+ * Stream insertion operator for PriorityQueue.
+ * Displays the top 3 recommended moves from the queue.
+ *
+ * @param os The output stream.
+ * @param pq The priority queue to display.
+ * @return The output stream.
+ */
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const PriorityQueue<T>& pq) {
 

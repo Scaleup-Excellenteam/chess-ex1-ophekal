@@ -29,16 +29,14 @@ Queen::Queen(const std::string& position, bool isBlack)
 
 
 
-/*
-*/
+/**
+ * Creates a deep copy of the Queen piece.
+ *
+ * @return A unique pointer to a new Queen instance with the same properties.
+ */
 std::unique_ptr<Piece> Queen::clone() const
 {
 	return std::make_unique<Queen>(*this);
-}
-
-int Queen::getValue() const
-{
-	return 9;
 }
 
 

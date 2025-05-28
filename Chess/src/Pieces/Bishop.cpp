@@ -28,16 +28,15 @@ Bishop::Bishop(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Bishop") {}
 
 
-/*
-*/
+/**
+ * Creates a deep copy of the Bishop piece.
+ *
+ * @return A unique pointer to a new Bishop instance with the same properties.
+ */
 std::unique_ptr<Piece> Bishop::clone() const
 {
 	return std::make_unique<Bishop>(*this);
 }
-
-/*
-*/
-int Bishop::getValue() const { return 3; }
 
 
 /**

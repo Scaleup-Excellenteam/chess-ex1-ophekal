@@ -28,17 +28,14 @@ Pawn::Pawn(const std::string& position, bool isBlack)
 	:Piece(position, isBlack, "Pawn") {}
 
 
-
-/*
-*/
+/**
+ * Creates a deep copy of the Pawn piece.
+ *
+ * @return A unique pointer to a new Pawn instance with the same properties.
+ */
 std::unique_ptr<Piece> Pawn::clone() const
 {
 	return std::make_unique<Pawn>(*this);
-}
-
-int Pawn::getValue() const
-{
-	return 1;
 }
 
 

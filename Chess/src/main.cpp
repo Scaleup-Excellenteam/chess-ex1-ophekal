@@ -8,10 +8,7 @@
 int main()
 {
 	string board = "RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr"; 
-	//string board = "####K#########R####################Q##bk############r###########"; 
-	//string board = "############################Q######q######pp####################"; 
-	//string board = "R#BQKB#RPPPPPPPP################################ppppppppr#bqkb#r"; 
-	
+
 	try {
 
 		Chess a(board);
